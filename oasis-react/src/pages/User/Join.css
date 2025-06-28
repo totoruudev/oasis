@@ -1,0 +1,145 @@
+/* src/pages/User/Join.css */
+
+/* 배경 및 폼 전체 */
+.join-bg {
+    background: #fff;
+    min-height: 100vh;
+}
+
+.join-container {
+    max-width: 500px;
+    margin: 48px auto 72px auto;
+    background: #fff;
+    padding: 0 0 40px 0;
+}
+
+.join-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -1px;
+    color: #333;
+    margin: 38px 0 35px 0;
+    text-align: center;
+}
+
+.join-form-label {
+    font-weight: 600;
+    font-size: 1.04rem;
+    margin-bottom: 7px;
+    color: #111;
+    display: block;
+}
+
+.join-input {
+    border: none;
+    border-bottom: 1.5px solid #e5e5e5;
+    border-radius: 0;
+    width: 100%;
+    font-size: 1.05rem;
+    padding: 12px 4px 10px 4px;
+    margin-bottom: 16px;
+    background: transparent;
+    transition: border-color 0.27s cubic-bezier(.4, 0, .2, 1), background 0.22s;
+}
+
+/* 인풋 hover/focus 효과 */
+.join-input:hover,
+.join-input:focus {
+    border-bottom: 2px solid #72bf44;
+    background: #f6faee;
+}
+
+.join-checkbox-wrap {
+    margin-top: 16px;
+    margin-bottom: 10px;
+}
+
+.join-checkbox-wrap .form-check {
+    margin-bottom: 9px;
+}
+
+#agreeAll+label {
+    font-weight: 700;
+    color: #439904;
+    font-size: 1.07rem;
+}
+
+.form-check-input:focus {
+    border-color: #72bf44;
+    box-shadow: 0 0 0 2px #eaf7e0;
+}
+
+.btn-join-main {
+    width: 100%;
+    background: #72bf44;
+    border: none;
+    font-size: 1.19rem;
+    font-weight: 700;
+    height: 54px;
+    border-radius: 0.6em;
+    margin-top: 18px;
+    color: #fff;
+    transition: background 0.22s cubic-bezier(.4, 0, .2, 1), box-shadow 0.19s;
+    box-shadow: 0 2px 16px 0 rgba(114, 191, 68, 0.08);
+}
+
+.btn-join-main:hover,
+.btn-join-main:focus {
+    background: #5ea02e;
+    box-shadow: 0 4px 24px 0 rgba(114, 191, 68, 0.13);
+}
+
+/* 체크박스 라벨 hover 효과 */
+.join-checkbox-wrap .form-check-label {
+    transition: color 0.18s;
+    cursor: pointer;
+}
+
+.join-checkbox-wrap .form-check-label:hover {
+    color: #72bf44;
+}
+
+.text-danger,
+.text-success {
+    font-size: 1.01rem;
+    padding-left: 2px;
+    margin-bottom: 10px;
+}
+
+.join-login-link {
+    font-size: 0.98rem;
+    color: #888;
+    margin-top: 18px;
+    text-align: center;
+}
+
+.join-login-link a {
+    color: #65af31;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.join-guide {
+    color: #9e9e9e;
+    font-size: 0.93rem;
+    padding-left: 2px;
+    margin-bottom: 17px;
+    margin-top: -7px;
+}
+
+#agreeAll+label {
+    font-weight: 700;
+    color: #439904;
+    font-size: 1.07rem;
+    transition: color 0.18s;
+}
+
+#agreeAll:focus+label,
+#agreeAll:hover+label {
+    color: #87cb5c;
+}
+
+.info-body {
+    padding: 17px 30px;
+    height: 500px;
+}

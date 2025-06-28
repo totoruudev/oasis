@@ -1,0 +1,168 @@
+.footer {
+    background: #f7f7f7;
+    border-top: 1px solid #eaeaea;
+    font-size: 14px;
+    color: #222;
+    margin-top: 40px;
+}
+
+.footer-top {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 16px 24px 16px;
+}
+
+.footer-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.footer-menu a {
+    color: #78b440;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.footer-menu a:hover {
+    font-weight: 700;
+    text-decoration: underline !important;
+}
+
+.footer-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 32px 16px;
+}
+
+.footer-col {
+    min-width: 220px;
+    flex: 1 1 220px;
+    margin-bottom: 24px;
+}
+
+.footer-company {
+    margin-bottom: 16px;
+    color: #666;
+    line-height: 1.7;
+    font-size: 13px;
+}
+
+.footer-company a {
+    color: #78b440;
+    font-size: 13px;
+}
+
+.footer-sns a {
+    margin-right: 10px;
+}
+
+.footer-sns img {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+}
+
+.footer-center-title {
+    font-weight: bold;
+    font-size: 18px;
+    color: #78b440;
+    margin-bottom: 10px;
+}
+
+.footer-center-info {
+    font-size: 14px;
+    color: #555;
+    margin-bottom: 10px;
+    line-height: 1.5;
+}
+
+.footer-center-link {
+    color: #78b440;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.footer-cert {
+    font-size: 12px;
+    color: #888;
+    margin-top: 10px;
+    line-height: 1.4;
+}
+
+.footer-notice,
+.footer-cate {
+    margin-bottom: 16px;
+}
+
+.footer-notice b,
+.footer-cate b {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.footer-notice ul,
+.footer-cate ul {
+    padding-left: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.footer-notice li,
+.footer-cate li {
+    margin-bottom: 6px;
+}
+
+.footer-notice a,
+.footer-cate a {
+    color: #78b440;
+    font-size: 13px;
+}
+
+.footer-app-title {
+    margin-bottom: 12px;
+}
+
+.footer-app {
+    display: flex;
+    gap: 16px;
+}
+
+.footer-app img {
+    width: 68px;
+    height: 68px;
+    border: 1px solid #e0e0e0;
+    border-radius: 7px;
+    background: #fff;
+    margin-bottom: 4px;
+}
+
+.footer-app div {
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+}
+
+.footer-bottom {
+    text-align: center;
+    color: #bbb;
+    font-size: 13px;
+    padding: 16px 0 10px 0;
+    background: #f7f7f7;
+    border-top: 1px solid #eee;
+}
+
+/* 반응형 */
+@media (max-width: 850px) {
+    .footer-row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .footer-col {
+        min-width: 0;
+        margin-bottom: 18px;
+    }
+}

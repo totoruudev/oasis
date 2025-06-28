@@ -29,5 +29,6 @@ public class ChatRoom {
     @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
     private java.util.List<ChatMessage> messages;
 
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 }

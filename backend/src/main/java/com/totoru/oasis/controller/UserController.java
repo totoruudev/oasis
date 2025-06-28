@@ -23,14 +23,14 @@ public class UserController {
     private final VerifiedEmailStorage verifiedEmailStorage;
 
 
-    @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody User user) {
+    @PostMapping("/join")
+    public ResponseEntity<?> join(@RequestBody User user) {
         if (!verifiedEmailStorage.isVerified(user.getEmail())) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("이메일 인증이 필요합니다.");
         }
 
         verifiedEmailStorage.remove(user.getEmail());
-        return ResponseEntity.ok(userService.register(user));
+        return ResponseEntity.ok(userService.join(user));
     }
 
     @PostMapping("/login")

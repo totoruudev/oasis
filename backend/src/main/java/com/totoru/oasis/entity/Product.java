@@ -48,9 +48,11 @@ public class Product {
     private List<OrderItem> orderItems;
 
     @Column(nullable = false, columnDefinition = "BOOLEAN DEFAULT TRUE")
+    @Builder.Default
     private boolean active = true;
 
     @Column(nullable = false)
+    @Builder.Default
     private int views = 0;
 
     @Column(name = "review_audio_path")

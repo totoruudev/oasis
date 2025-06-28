@@ -19,7 +19,7 @@ public class UserService {
     private final ChatRoomRepository chatRoomRepository;
     private final PasswordEncoder passwordEncoder; // ✅ 추가
 
-    public User register(User user) {
+    public User join(User user) {
         // ✅ 비밀번호 암호화
         String rawPassword = user.getPassword();
         String encoded = passwordEncoder.encode(rawPassword);

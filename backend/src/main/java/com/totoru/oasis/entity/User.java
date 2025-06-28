@@ -32,6 +32,7 @@ public class User {
     private String profileImg;
 
     @Column(nullable = false)
+    @Builder.Default
     private boolean social = false;
 
     @OneToMany(mappedBy = "questionUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
@@ -43,6 +44,7 @@ public class User {
     private List<Qna> answers;
 
     @Column(nullable = false)
+    @Builder.Default
     private String role = "USER"; // 기본값
 
     private LocalDateTime createdAt;

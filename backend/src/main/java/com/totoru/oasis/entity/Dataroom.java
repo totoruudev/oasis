@@ -22,5 +22,6 @@ public class Dataroom {
     private String filename;
     private String filepath;
 
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 }

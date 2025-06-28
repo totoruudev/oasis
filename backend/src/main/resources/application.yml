@@ -42,8 +42,20 @@ spring:
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
             user-name-attribute: sub
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GOOGLE_MAIL_USERNAME}
+    password: ${GOOGLE_MAIL_PASSWORD}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+
 upload:
   path: src/main/resources/static/upload
+
+file:
+  upload-dir: ./src/main/resources/uploads
 
 openai:
   api-key: ${OPENAI_API_KEY}

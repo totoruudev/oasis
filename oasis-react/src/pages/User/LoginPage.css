@@ -1,0 +1,197 @@
+.login-wrap {
+    min-height: 80vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-box {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 8px 36px 0 rgba(120,180,64,0.12), 0 2px 8px 0 rgba(100,120,90,0.08);
+    padding: 2.5rem 2.2rem 2rem;
+    margin: 32px 0;
+    transition: box-shadow .18s;
+    position: relative;
+}
+
+.login-box:hover {
+    box-shadow: 0 12px 40px 0 rgba(120,180,64,0.18), 0 4px 16px 0 rgba(100,120,90,0.10);
+}
+
+.login-title {
+    font-weight: 800;
+    text-align: center;
+    font-size: 1.7rem;
+    color: #5c8f16;
+    letter-spacing: 1px;
+    margin-bottom: 2.2rem;
+}
+
+.login-tabs {
+    border-bottom: 1.5px solid #eee;
+}
+
+.login-tab {
+    border: none;
+    background: none;
+    font-weight: 500;
+    font-size: 1.07rem;
+    padding: 0.75rem 0 0.5rem 0;
+    color: #888;
+    border-bottom: 2.5px solid transparent;
+    cursor: pointer;
+    transition: border-bottom .15s, color .15s;
+}
+
+.login-tab.active {
+    color: #222;
+    border-bottom: 2.5px solid #222;
+    font-weight: 600;
+}
+
+.input-group {
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fafcf7;
+    border: 1.5px solid #e0efcd;
+    margin-bottom: 10px;
+    box-shadow: 0 1.5px 8px 0 rgba(120,180,64,0.03);
+}
+
+.input-group-text {
+    background: #fafcf7 !important;
+    border: none !important;
+    color: #94bb5e !important;
+    font-size: 1.1rem;
+    padding-right: 2px;
+    padding-left: 8px;
+}
+
+.form-control {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    font-size: 1.08rem;
+    color: #506c20;
+    padding: 0.7rem 0.6rem 0.7rem 0.1rem;
+}
+
+.form-control::placeholder {
+    color: #adc58d;
+    font-weight: 400;
+    opacity: 1;
+    font-size: 1.06rem;
+}
+
+.form-control:focus {
+    background: #f6fbe4 !important;
+}
+
+.login-main-btn {
+    background: #78b440 !important;
+    color: #fff !important;
+    font-weight: 700;
+    font-size: 1.13rem;
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 2px 8px #e5f3d3;
+    transition: background .17s, box-shadow .18s;
+    margin-top: 0.2rem;
+    margin-bottom: 1rem;
+}
+
+.login-main-btn:hover,
+.login-main-btn:active {
+    background: #5c8f16 !important;
+    color: #fff !important;
+    box-shadow: 0 4px 20px #cbe5ab;
+}
+
+
+.login-divider {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 13px;
+    border: none;
+    border-top: 1px solid #eee;
+    z-index: 1;
+}
+
+.login-divider-text {
+    background: #fff;
+    z-index: 2;
+    position: relative;
+    padding: 0 14px;
+    font-size: .92rem;
+    color: #aaa;
+}
+
+.login-google-btn {
+    background: #fff;
+    border: 1.5px solid #e6e6e6;
+    color: #222;
+    font-weight: 600;
+    border-radius: 8px;
+    font-size: 1.08rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 48px;
+    margin-top: 6px;
+    transition: border .14s, box-shadow .14s, background .12s;
+    box-shadow: 0 1px 6px #e3efdb55;
+    gap: 7px;
+}
+.login-google-btn:hover {
+    border: 1.5px solid #78b440;
+    background: #f8faf4;
+    box-shadow: 0 4px 14px #e3efdb85;
+    color: #4d810f;
+}
+
+.alert-danger {
+    background: #ffe6e6;
+    color: #c94a4a;
+    border: none;
+    border-radius: 7px;
+    margin-top: 4px;
+    font-size: 1.02rem;
+    padding: 0.55rem 0.9rem;
+    text-align: center;
+    box-shadow: 0 2px 8px #fae6e6;
+}
+
+.join-guide {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 1.01rem;
+    color: #6a7f4c;
+    margin-bottom: 1.1rem;
+    line-height: 1.6;
+}
+
+.login-join-btn {
+    border: 1.5px solid #78b440;
+    color: #5c8f16;
+    background: #f6faed;
+    font-weight: 600;
+    font-size: 1.04rem;
+    padding: 0.32rem 1.15rem;   /* 살짝 줄여서 텍스트랑 수직 가운데 맞춤 */
+    margin-left: 2px;           /* 간격만 좁게 */
+    margin-bottom: 4px;
+    display: inline-block;
+    transition: background 0.18s, color 0.18s, border 0.16s;
+    height: auto;               /* 혹시 height 있으면 삭제 */
+    vertical-align: middle;     /* 세로 정렬 강제 */
+    line-height: 1.8;
+}
+
+.login-join-btn:hover {
+    background: #78b440;
+    color: #fff;
+    border: 1.5px solid #5c8f16;
+}

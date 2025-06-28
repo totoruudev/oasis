@@ -28,5 +28,7 @@ public class ChatMessage {
     private User sender;
 
     private String content;
+
+    @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
 }
