@@ -19,17 +19,17 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/oauth")
-@CrossOrigin(origins = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequiredArgsConstructor
 public class GoogleOAuthController {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final UserService userService;
 
-    @Value("${google.oauth.client-id}")
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String googleClientId;
 
-    @Value("${google.oauth.client-secret}")
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String googleClientSecret;
 
     @PostMapping("/google")

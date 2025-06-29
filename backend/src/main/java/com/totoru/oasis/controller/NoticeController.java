@@ -18,7 +18,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/notices")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class NoticeController {
 
     private final NoticeService noticeService;

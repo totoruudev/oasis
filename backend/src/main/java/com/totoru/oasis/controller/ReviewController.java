@@ -10,7 +10,6 @@ import com.totoru.oasis.repository.UserRepository;
 import com.totoru.oasis.service.OpenAiClient;
 import com.totoru.oasis.service.ProductService;
 import com.totoru.oasis.service.ReviewService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,25 +18,21 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/reviews")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class ReviewController {
 
     private final ReviewService reviewService;
@@ -46,7 +41,9 @@ public class ReviewController {
     private final UserRepository userRepository;
     private final ReviewRepository reviewRepository;
     private final OpenAiClient openAiClient;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
+    // DTO
     public record ReviewDto(
             Long id,
             String content,
@@ -59,33 +56,44 @@ public class ReviewController {
             LocalDateTime createdAt
     ) {}
 
+    // 상품별 리뷰 조회
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<ReviewDto>> getReviews(@PathVariable("productId") Long productId) {
         List<ReviewDto> dtoList = reviewService.getReviewsByProductId(productId).stream()
                 .map(r -> new ReviewDto(
                         r.getId(), r.getContent(), r.getRating(), r.getUsername(),
-                        r.getImagePath() != null ? r.getImagePath().toString() : null, r.getProduct().getId(), r.getOrderId(),
+                        r.getImagePath() != null ? r.getImagePath().toString() : null,
+                        r.getProduct().getId(), r.getOrderId(),
                         r.getProduct().getName(), r.getCreatedAt()
                 )).toList();
         return ResponseEntity.ok(dtoList);
     }
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
+    // 리뷰 등록 (인증 필요)
     @PostMapping(value = "/{productId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> createReview(
             @PathVariable Long productId,
             @RequestPart("review") String reviewJson,
             @RequestPart(value = "image", required = false) MultipartFile image
     ) {
+        // 인증 체크
+        User loginUser = getLoginUser();
+        if (loginUser == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+
         try {
             Review review = objectMapper.readValue(reviewJson, Review.class);
 
-            // productId로 상품 엔티티 설정
-            Product product = productService.findById(productId).orElseThrow(() -> new RuntimeException("상품 없음"));
+            // 상품
+            Product product = productService.findById(productId)
+                    .orElseThrow(() -> new RuntimeException("상품 없음"));
             review.setProduct(product);
 
-            // 이미지 저장 및 경로 세팅
+            // 유저 정보
+            review.setUserId(loginUser.getId());
+            review.setUsername(loginUser.getUsername());
+
+            // 이미지
             if (image != null && !image.isEmpty()) {
                 String imagePath = reviewService.storeFile(image);
                 review.setImagePath(imagePath);
@@ -99,14 +107,17 @@ public class ReviewController {
         }
     }
 
-
-
+    // 리뷰 수정 (인증 필요)
     @PutMapping(value = "/update/{reviewId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> updateReview(
             @PathVariable Long reviewId,
             @RequestPart("review") String reviewJson,
             @RequestPart(value = "image", required = false) MultipartFile image
     ) {
+        User loginUser = getLoginUser();
+        if (loginUser == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+
         try {
             Review reviewData = objectMapper.readValue(reviewJson, Review.class);
 
@@ -115,11 +126,12 @@ public class ReviewController {
                 imagePath = reviewService.storeFile(image);
             }
 
+            // 권한 체크 등은 reviewService에서 해도 되고 여기서 해도 됨
             Review updated = reviewService.updateReview(
                     reviewId,
                     reviewData.getContent(),
                     reviewData.getRating(),
-                    reviewData.getUserId(),
+                    loginUser.getId(),
                     imagePath
             );
             return ResponseEntity.ok(updated);
@@ -129,37 +141,38 @@ public class ReviewController {
         }
     }
 
-
-
-
+    // 리뷰 삭제 (인증 필요)
     @DeleteMapping("/{reviewId}")
-    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId, HttpSession session) {
-        User loginUser = (User) session.getAttribute("loginUser");
-        if (loginUser == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+    public ResponseEntity<?> deleteReview(@PathVariable Long reviewId) {
+        User loginUser = getLoginUser();
+        if (loginUser == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
+
         reviewService.deleteReview(reviewId, loginUser.getId());
         return ResponseEntity.ok("삭제 완료");
     }
 
+    // 특정 주문-상품-유저 조합 리뷰 중복 확인 (구매자 인증 X)
     @GetMapping("/check")
-    public ResponseEntity<?> checkReview(@RequestParam Long orderId, @RequestParam Long productId, @RequestParam Long userId) {
+    public ResponseEntity<?> checkReview(
+            @RequestParam Long orderId,
+            @RequestParam Long productId,
+            @RequestParam Long userId
+    ) {
         return reviewService.findByOrderIdAndProductIdAndUserId(orderId, productId, userId)
                 .map(ResponseEntity::ok).orElse(ResponseEntity.noContent().build());
     }
 
+    // 마이 리뷰(내가 쓴 리뷰) - 인증 필요!
     @GetMapping("/my")
-    public ResponseEntity<Page<ReviewDto>> getMyReviews(
-            HttpSession session,
+    public ResponseEntity<?> getMyReviews(
             @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-        System.out.println("💬 현재 페이지 번호: " + pageable.getPageNumber());
-        System.out.println("💬 페이지 크기: " + pageable.getPageSize());
+        User loginUser = getLoginUser();
+        if (loginUser == null)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
 
-        Object userIdObj = session.getAttribute("userId");
-        if (userIdObj == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-
-        Long userId = (userIdObj instanceof Long) ? (Long) userIdObj : Long.parseLong(userIdObj.toString());
-
-        Page<ReviewDto> dtoPage = reviewRepository.findByUserId(userId, pageable)
+        Page<ReviewDto> dtoPage = reviewRepository.findByUserId(loginUser.getId(), pageable)
                 .map(r -> new ReviewDto(
                         r.getId(), r.getContent(), r.getRating(), r.getUsername(),
                         r.getImagePath(), r.getProduct().getId(), r.getOrderId(),
@@ -169,7 +182,7 @@ public class ReviewController {
         return ResponseEntity.ok(dtoPage);
     }
 
-
+    // 리뷰 단건 조회
     @GetMapping("/{reviewId}")
     public ResponseEntity<ReviewDto> getReviewById(@PathVariable Long reviewId) {
         Optional<Review> optionalReview = reviewRepository.findById(reviewId);
@@ -195,7 +208,7 @@ public class ReviewController {
         return ResponseEntity.ok(dto);
     }
 
-
+    // 오픈AI 활용: 리뷰 요약 및 TTS (관리자/운영자 기능)
     @PostMapping("/audio-summary/{productId}")
     public ResponseEntity<?> generateAudioSummary(@PathVariable Long productId) {
         List<Review> reviews = reviewRepository.findAllByProductId(productId);
@@ -206,7 +219,6 @@ public class ReviewController {
                     .body("리뷰가 존재하지 않습니다.");
         }
 
-        // ✅ 자연스러운 요약문 생성을 위한 프롬프트
         String reviewTexts = reviews.stream()
                 .map(Review::getContent)
                 .collect(Collectors.joining("\n- "));
@@ -220,21 +232,15 @@ public class ReviewController {
         리뷰 목록:
         """ + reviewTexts;
 
-        // ✅ GPT 요약 요청
         String summary = openAiClient.generateText(prompt);
-
-        // ✅ TTS 변환
         String audioUrl = openAiClient.generateTTS(summary);
 
-        // ✅ DB에 저장
         Product product = productRepository.findById(productId).orElseThrow();
         product.setReviewAudioPath(audioUrl);
         productRepository.save(product);
 
         return ResponseEntity.ok(Map.of("summary", summary, "audioUrl", audioUrl));
     }
-
-
 
     @GetMapping("/{productId}/audio-summary")
     public ResponseEntity<Map<String, String>> getAudioSummary(@PathVariable Long productId) {
@@ -251,6 +257,16 @@ public class ReviewController {
         return ResponseEntity.ok(Map.of("audioUrl", path));
     }
 
+    // ======== 🔑 인증 유저 조회 유틸 ========
+    private User getLoginUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null
+                || !authentication.isAuthenticated()
+                || authentication.getPrincipal().equals("anonymousUser")) {
+            return null;
+        }
+
+        String username = authentication.getName();
+        return userRepository.findByUsername(username).orElse(null);
+    }
 }
-
-

@@ -71,14 +71,14 @@
 
 .btn-join-main {
     width: 100%;
-    background: #72bf44;
+    background-color: #579235 !important;
     border: none;
     font-size: 1.19rem;
     font-weight: 700;
     height: 54px;
     border-radius: 0.6em;
     margin-top: 18px;
-    color: #fff;
+    color: #fff !important;
     transition: background 0.22s cubic-bezier(.4, 0, .2, 1), box-shadow 0.19s;
     box-shadow: 0 2px 16px 0 rgba(114, 191, 68, 0.08);
 }
@@ -142,4 +142,38 @@
 .info-body {
     padding: 17px 30px;
     height: 500px;
+}
+
+.custom-modal-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.32);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.custom-modal {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px 0 rgba(0, 0, 0, 0.14);
+    padding: 36px 40px;
+    min-width: 280px;
+    text-align: center;
+}
+
+.custom-modal-title {
+    font-size: 1.4rem;
+    font-weight: bold;
+    margin-bottom: 12px;
+    color: #228b22;
+}
+
+.custom-modal-content {
+    font-size: 1rem;
+    margin-bottom: 4px;
 }

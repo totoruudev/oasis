@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DaumPostcode from "react-daum-postcode";
 import axios from "axios";
 import "./Join.css";
@@ -11,8 +11,8 @@ export default function Join() {
         password: "",
         password2: "",
         tel: "",
-        address: "",      // 전체 주소
-        addressDetail: "",// 상세주소
+        address: "",
+        addressDetail: "",
         email: "",
         agreeAll: false,
         agree1: false,
@@ -22,6 +22,12 @@ export default function Join() {
     const [showAddressModal, setShowAddressModal] = useState(false);
     const [error, setError] = useState("");
     const [success, setSuccess] = useState("");
+    const [showModal, setShowModal] = useState(false);
+    const [isEmailSent, setIsEmailSent] = useState(false);
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+    const [emailCode, setEmailCode] = useState("");
+    const [emailCheckMsg, setEmailCheckMsg] = useState("");
+    const navigate = useNavigate();
 
     // 주소 검색 완료시
     const handleComplete = (data) => {
@@ -32,7 +38,7 @@ export default function Join() {
         setShowAddressModal(false);
     };
 
-    // 체크박스 등 기타 핸들러는 동일
+    // 체크박스 등 기타 핸들러
     const handleAllAgree = (e) => {
         const checked = e.target.checked;
         setForm((prev) => ({
@@ -59,6 +65,44 @@ export default function Join() {
         setForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    // 이메일 인증 메일 발송
+    const handleSendEmail = async () => {
+        setEmailCheckMsg("");
+        setIsEmailSent(false);
+        setIsEmailVerified(false);
+        if (!form.email) {
+            setEmailCheckMsg("이메일을 입력하세요.");
+            return;
+        }
+        try {
+            await axios.post("/api/email/send", { email: form.email });
+            setIsEmailSent(true);
+            setEmailCheckMsg("이메일로 인증번호가 발송되었습니다.");
+        } catch (err) {
+            setEmailCheckMsg("인증메일 발송 실패. 이미 등록된 이메일이거나 형식이 올바르지 않습니다.");
+        }
+    };
+
+    // 이메일 인증번호 확인
+    const handleVerifyEmail = async () => {
+        setEmailCheckMsg("");
+        if (!emailCode) {
+            setEmailCheckMsg("인증번호를 입력하세요.");
+            return;
+        }
+        try {
+            await axios.post("/api/email/verify", {
+                email: form.email,
+                code: emailCode,
+            });
+            setIsEmailVerified(true);
+            setEmailCheckMsg("이메일 인증이 완료되었습니다.");
+        } catch (err) {
+            setEmailCheckMsg("인증번호가 올바르지 않습니다.");
+            setIsEmailVerified(false);
+        }
+    };
+
     // 폼 제출
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -72,16 +116,21 @@ export default function Join() {
             setError("필수 약관에 모두 동의해 주세요.");
             return;
         }
+        if (!isEmailVerified) {
+            setError("이메일 인증을 완료해 주세요.");
+            return;
+        }
         try {
             await axios.post("/api/users/join", {
                 username: form.username,
                 name: form.name,
                 password: form.password,
                 tel: form.tel,
-                address: form.address + " " + form.addressDetail, // 주소+상세주소
+                address: form.address + " " + form.addressDetail,
                 email: form.email,
             });
-            setSuccess("회원가입이 완료되었습니다. 로그인 해주세요!");
+            setSuccess("회원가입이 완료되었습니다.");
+            setShowModal(true);
             setForm({
                 username: "",
                 name: "",
@@ -96,6 +145,10 @@ export default function Join() {
                 agree2: false,
                 agree3: false,
             });
+            setTimeout(() => {
+                setShowModal(false);
+                navigate("/login");
+            }, 1800);
         } catch (err) {
             setError(
                 err.response?.data?.message ||
@@ -112,14 +165,65 @@ export default function Join() {
                     {/* ...상단 필드 동일 ... */}
                     <label className="join-form-label">아이디 *</label>
                     <input type="text" name="username" className="join-input" value={form.username} onChange={handleChange} required placeholder="아이디를 입력해 주세요" />
+
                     <label className="join-form-label">비밀번호 *</label>
                     <input type="password" name="password" className="join-input" value={form.password} onChange={handleChange} required placeholder="비밀번호를 입력해 주세요" />
+
                     <label className="join-form-label">비밀번호 확인 *</label>
                     <input type="password" name="password2" className="join-input" value={form.password2} onChange={handleChange} required placeholder="비밀번호를 한 번 더 입력해 주세요" />
+
                     <label className="join-form-label">이름 *</label>
                     <input type="text" name="name" className="join-input" value={form.name} onChange={handleChange} required placeholder="이름" />
+
                     <label className="join-form-label">휴대폰 번호 *</label>
                     <input type="tel" name="tel" className="join-input" value={form.tel} onChange={handleChange} required placeholder="휴대폰 번호" />
+
+                    {/* 이메일 인증 영역 */}
+                    <label className="join-form-label">이메일 *</label>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                        <input
+                            type="email"
+                            name="email"
+                            className="join-input"
+                            value={form.email}
+                            onChange={handleChange}
+                            required
+                            placeholder="이메일 입력"
+                            style={{ flex: 1 }}
+                            autoComplete="off"
+                            disabled={isEmailVerified}
+                        />
+                        <button
+                            type="button"
+                            className="btn btn-outline-success"
+                            onClick={handleSendEmail}
+                            disabled={isEmailVerified}
+                        >
+                            인증메일 발송
+                        </button>
+                    </div>
+                    {isEmailSent && !isEmailVerified && (
+                        <div style={{ display: "flex", gap: 8, marginTop: 5 }}>
+                            <input
+                                type="text"
+                                className="join-input"
+                                placeholder="인증번호 입력"
+                                value={emailCode}
+                                onChange={e => setEmailCode(e.target.value)}
+                                style={{ flex: 1 }}
+                            />
+                            <button
+                                type="button"
+                                className="btn btn-outline-info"
+                                onClick={handleVerifyEmail}
+                            >
+                                인증확인
+                            </button>
+                        </div>
+                    )}
+                    {emailCheckMsg && (
+                        <div className={`mb-2 ${isEmailVerified ? "text-success" : "text-danger"}`}>{emailCheckMsg}</div>
+                    )}
 
                     {/* 주소 영역 */}
                     <label className="join-form-label">주소</label>
@@ -143,7 +247,6 @@ export default function Join() {
                             주소찾기
                         </button>
                     </div>
-                    {/* 상세주소 */}
                     <input
                         type="text"
                         name="addressDetail"
@@ -153,7 +256,7 @@ export default function Join() {
                         placeholder="상세주소 (예: 아파트, 동/호수 등)"
                         style={{ marginTop: "2px" }}
                     />
-                    {/* 주소 모달 */}
+
                     {showAddressModal && (
                         <div
                             style={{
@@ -185,7 +288,7 @@ export default function Join() {
                         </div>
                     )}
 
-                    {/* ...이하 약관/버튼 등 동일 ... */}
+                    {/* 약관 등 체크 */}
                     <div className="join-guide">
                         오아시스에서 이용약관 및 개인정보 동의 내용을 확인하였으며,
                         회원님이 동의하실 때, 만 14세 미만 아동은 회원가입이 불가합니다.
@@ -213,6 +316,14 @@ export default function Join() {
                     <button type="submit" className="btn btn-join-main">
                         회원가입
                     </button>
+                    {showModal && (
+                        <div className="custom-modal-bg">
+                            <div className="custom-modal">
+                                <div className="custom-modal-title">🎉 회원가입 완료</div>
+                                <div className="custom-modal-content">로그인 페이지로 이동합니다!</div>
+                            </div>
+                        </div>
+                    )}
                     <div className="join-login-link">
                         이미 계정이 있으신가요? <Link to="/login">로그인</Link>
                     </div>

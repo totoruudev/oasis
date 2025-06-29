@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class KakaoController {
 
     private final RestTemplate restTemplate = new RestTemplate();

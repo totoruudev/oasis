@@ -16,7 +16,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class FileUploadController {
 
     @Value("${file.upload-dir}")

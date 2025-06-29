@@ -13,7 +13,7 @@ import java.util.Map;
 public class TossPaymentClient {
 
     private final RestTemplate restTemplate = new RestTemplate();
-    @Value("${toss.secret-key}")
+    @Value("${toss.payments.test-secret-key}")
     private String secretKey;
 
     public ResponseEntity<String> confirmPayment(String paymentKey, String orderId, int amount) {

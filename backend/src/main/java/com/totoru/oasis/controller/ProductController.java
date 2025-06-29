@@ -16,7 +16,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api/products")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class ProductController {
 
     private final ProductService productService;

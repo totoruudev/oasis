@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./LoginPage.css";
 
@@ -7,9 +7,11 @@ export default function LoginPage({ onLoginSuccess }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
+        console.log("로그인 버튼 클릭됨", username, password); // 추가
         setError("");
         try {
             const res = await axios.post(
@@ -19,6 +21,7 @@ export default function LoginPage({ onLoginSuccess }) {
             );
             if (onLoginSuccess) onLoginSuccess(res.data); // 성공 콜백(옵션)
             // 보통 로그인 후 리다이렉트
+            navigate("/");
         } catch (err) {
             setError("아이디 또는 비밀번호를 다시 확인해 주세요.");
         }

@@ -8,7 +8,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class WebClientConfig {
 
-    @Value("${openai.api.key}")
+    @Value("${OPENAI_API_KEY}")
     private String openaiApiKey;
 
     @Bean

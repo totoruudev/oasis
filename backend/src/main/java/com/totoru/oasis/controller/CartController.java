@@ -14,7 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/cart")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*", allowCredentials = "true")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class CartController {
 
     private final CartService cartService;

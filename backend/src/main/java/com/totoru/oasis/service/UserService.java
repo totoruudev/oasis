@@ -4,7 +4,7 @@ import com.totoru.oasis.entity.User;
 import com.totoru.oasis.repository.ChatRoomRepository;
 import com.totoru.oasis.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder; // ✅ 추가
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,24 +17,52 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final ChatRoomRepository chatRoomRepository;
-    private final PasswordEncoder passwordEncoder; // ✅ 추가
+    private final PasswordEncoder passwordEncoder;
 
+    // 회원가입
     public User join(User user) {
-        // ✅ 비밀번호 암호화
-        String rawPassword = user.getPassword();
-        String encoded = passwordEncoder.encode(rawPassword);
-        user.setPassword(encoded);
+        // 1. 필수값 검증
+        if (isEmpty(user.getUsername()))
+            throw new IllegalArgumentException("아이디를 입력하세요.");
+        if (isEmpty(user.getEmail()))
+            throw new IllegalArgumentException("이메일을 입력하세요.");
+        if (isEmpty(user.getPassword()))
+            throw new IllegalArgumentException("비밀번호를 입력하세요.");
 
+        // 2. 중복 체크
+        if (userRepository.existsByUsername(user.getUsername()))
+            throw new IllegalArgumentException("이미 존재하는 아이디입니다.");
+        if (userRepository.existsByEmail(user.getEmail()))
+            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+
+        // 3. 비밀번호 암호화
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // 4. 필드의 기본값 처리 (엔티티 빌더에 디폴트 있으면 생략 가능)
+        if (user.getRole() == null || user.getRole().isBlank())
+            user.setRole("USER");
+        if (user.getTel() == null)
+            user.setTel("");
+        if (user.getAddress() == null)
+            user.setAddress("");
+        if (user.getName() == null)
+            user.setName("");
+        if (user.getProfileImg() == null)
+            user.setProfileImg("");
+        // social: boolean은 이미 false가 디폴트
+
+        // 5. 저장
         return userRepository.save(user);
     }
 
+    // 로그인
     public User login(String username, String password) {
-        // ✅ 해시 비교
         return userRepository.findByUsername(username)
                 .filter(u -> passwordEncoder.matches(password, u.getPassword()))
                 .orElse(null);
     }
 
+    // ID로 사용자 조회
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
@@ -48,49 +76,56 @@ public class UserService {
         }
     }
 
+    // 전체 사용자 조회
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
+    // 회원탈퇴 (해당 유저의 모든 채팅방 삭제 후)
     @Transactional
     public void deleteUserById(Long userId) {
-        chatRoomRepository.deleteByUser1IdOrUser2Id(userId, userId); // ✅ 사용자 관련 채팅방 삭제
+        chatRoomRepository.deleteByUser1IdOrUser2Id(userId, userId);
         userRepository.deleteById(userId);
     }
 
+    // 이메일로 사용자 찾거나, 없으면 생성(소셜 로그인용)
     public User findOrCreateUserByEmail(String email, String name) {
-        Optional<User> existingUser = userRepository.findByEmail(email);
-        if (existingUser.isPresent()) {
-            return existingUser.get();
-        }
-
-        User newUser = new User();
-        newUser.setUsername(name);
-        newUser.setEmail(email);
-        newUser.setName(name);
-        newUser.setTel("");
-        newUser.setAddress("");
-        newUser.setPassword(""); // 소셜 로그인은 비번 없이
-        newUser.setRole("USER");
-        newUser.setSocial(true);
-
-        return userRepository.save(newUser);
+        return userRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    User newUser = User.builder()
+                            .username(name)
+                            .email(email)
+                            .name(name)
+                            .tel("")
+                            .address("")
+                            .password("") // 소셜로그인엔 비번X
+                            .role("USER")
+                            .social(true)
+                            .build();
+                    return userRepository.save(newUser);
+                });
     }
 
+    // username으로 조회
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
+    // 더미 유저 삭제
     @Transactional
     public void deleteDummyUsers() {
         List<User> dummyUsers = userRepository.findAll().stream()
-                .filter(u -> u.getUsername().startsWith("user")) // user1 ~ user50
+                .filter(u -> u.getUsername() != null && u.getUsername().startsWith("user"))
                 .toList();
 
         dummyUsers.forEach(user -> {
-            chatRoomRepository.deleteByUser1IdOrUser2Id(user.getId(), user.getId()); // 연관 채팅방 삭제
+            chatRoomRepository.deleteByUser1IdOrUser2Id(user.getId(), user.getId());
             userRepository.deleteById(user.getId());
         });
     }
 
+    // 문자열이 null 또는 빈 문자열인지 검사
+    private boolean isEmpty(String s) {
+        return s == null || s.trim().isEmpty();
+    }
 }
