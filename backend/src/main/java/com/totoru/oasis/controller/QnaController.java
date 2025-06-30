@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/qna")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class QnaController {
 
     private final QnaService qnaService;

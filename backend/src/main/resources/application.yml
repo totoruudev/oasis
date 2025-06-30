@@ -1,5 +1,10 @@
 server:
   port: 8094
+  servlet:
+    session:
+      cookie:
+        same-site: none
+        secure: false
 
 spring:
   application:

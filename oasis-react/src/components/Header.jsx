@@ -2,7 +2,9 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./Header.css";
 
+
 export default function Header({ isLoggedIn, userName, onLogout }) {
+  console.log("Header 렌더링", isLoggedIn, userName);
   return (
     <header className="header border-bottom bg-white">
       {/* 상단: 로고/유저메뉴 */}
