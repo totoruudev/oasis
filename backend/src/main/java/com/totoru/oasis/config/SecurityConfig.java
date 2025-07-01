@@ -11,6 +11,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -52,7 +55,19 @@ public class SecurityConfig {
                         // [회원가입, 로그인 등 인증 없이 허용해야 할 엔드포인트]
                         .requestMatchers(
                                 "/api/users/join", "/api/users/login", "/api/users/check-*", "/api/users/check/*", "/api/users/check*",
-                                "/api/email/send", "/api/email/verify"
+                                "/api/email/send", "/api/email/verify",
+                                "/api/event/**",
+                                "/api/products/**",
+                                "/api/categories/**",
+                                "/api/notices/**",
+                                "/api/banner/**",
+                                "/api/board/list",
+                                "/api/board/detail/{id}",
+                                "/api/chatting/**",
+                                "/api/datarooms/**",
+                                "/api/notices/",
+                                "/api/notices/latest",
+                                "/api/notices/{id}"
                         ).permitAll()
                         // [그 외 나머지는 인증 필요]
                         .anyRequest().authenticated()
@@ -64,5 +79,18 @@ public class SecurityConfig {
         ;
 
         return http.build();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(true); // 쿠키/세션 허용
+        config.addAllowedOrigin("http://localhost:3000"); // 프론트 주소만 명확히
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }

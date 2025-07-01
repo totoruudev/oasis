@@ -2,6 +2,8 @@ package com.totoru.oasis.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.totoru.oasis.entity.Product;
+import com.totoru.oasis.entity.Category;
+import com.totoru.oasis.repository.CategoryRepository;
 import com.totoru.oasis.repository.ProductRepository;
 import com.totoru.oasis.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +24,9 @@ public class ProductController {
 
     private final ProductService productService;
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
 
+    // 상품 등록
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Product> createProduct(
             @RequestPart("product") String productJson,
@@ -39,6 +44,7 @@ public class ProductController {
         }
     }
 
+    // 상품 수정
     @PutMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Product> updateProduct(
             @PathVariable Long id,
@@ -57,15 +63,22 @@ public class ProductController {
         }
     }
 
+    // 상품 목록 (카테고리별/전체)
     @GetMapping
     public ResponseEntity<List<Product>> list(@RequestParam(required = false) String category) {
         if (category != null && !category.isEmpty()) {
-            return ResponseEntity.ok(productRepository.findByCategoryAndActiveTrueOrderByCreatedAtDesc(category));
+            Optional<Category> cate = categoryRepository.findByName(category);
+            if (cate.isPresent()) {
+                return ResponseEntity.ok(productRepository.findByCategoryAndActiveTrueOrderByCreatedAtDesc(cate.get()));
+            } else {
+                return ResponseEntity.ok(Collections.emptyList());
+            }
         } else {
             return ResponseEntity.ok(productRepository.findAllByActiveTrueOrderByCreatedAtDesc());
         }
     }
 
+    // 상품 상세
     @GetMapping("/{id}")
     public ResponseEntity<Product> detail(@PathVariable("id") Long id) {
         Optional<Product> optionalProduct = productService.findById(id);
@@ -80,23 +93,27 @@ public class ProductController {
         }
     }
 
+    // 상품 삭제
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         productService.delete(id);
         return ResponseEntity.ok().build();
     }
 
+    // 최신 상품 8개
     @GetMapping("/latest")
     public ResponseEntity<List<Product>> latestProducts() {
         List<Product> latest = productRepository.findTop8ByOrderByCreatedAtDesc();
         return ResponseEntity.ok(latest);
     }
 
+    // 상품 카테고리 목록 (중복 없는 이름만)
     @GetMapping("/categories")
     public ResponseEntity<List<String>> getCategories() {
         return ResponseEntity.ok(productRepository.findDistinctCategories());
     }
 
+    // 인기 상품 8개
     @GetMapping("/popular")
     public ResponseEntity<List<Product>> getPopularProducts() {
         List<Product> popular = productRepository.findTop8ByOrderByViewsDesc();

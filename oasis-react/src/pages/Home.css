@@ -1,0 +1,16 @@
+.category-section .category-icon {
+    transition: transform 0.2s;
+    cursor: pointer;
+}
+
+.category-section .category-icon:active {
+    transform: scale(0.92);
+}
+
+.product-card img {
+    transition: transform 0.2s;
+}
+
+.product-card img:hover {
+    transform: scale(1.1);
+}
