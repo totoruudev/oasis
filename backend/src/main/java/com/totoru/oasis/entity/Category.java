@@ -29,7 +29,7 @@ public class Category {
 
     public String getIcon() {
         if (icon == null) return null;
-        return "/images/products/" + icon;
+        return "/images/products/recommend_icon/" + icon;
     }
 
     @OneToMany(mappedBy = "category")

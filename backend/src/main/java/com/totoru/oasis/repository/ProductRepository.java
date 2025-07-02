@@ -18,4 +18,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByActiveTrueOrderByCreatedAtDesc();
     @Query("SELECT DISTINCT p.category FROM Product p")
     List<String> findDistinctCategories();
+    List<Product> findByCategory_NameInAndActiveTrueOrderByCreatedAtDesc(List<String> categoryNames);
+
 }
