@@ -24,6 +24,14 @@ public class Category {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = true)
+    private String icon;
+
+    public String getIcon() {
+        if (icon == null) return null;
+        return "/images/products/" + icon;
+    }
+
     @OneToMany(mappedBy = "category")
     @JsonIgnore
     private List<SubCategory> subCategories;
