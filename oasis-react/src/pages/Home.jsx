@@ -6,6 +6,13 @@ import { motion } from "framer-motion";
 import { sectionGroups } from "../constants/sectionGroups";
 import axios from "axios";
 import "./Home.css";
+import {
+  getSections,
+  getSubCategories,
+  getEventCarousel,
+  getRecommendedCategories,
+  getLatestNotices,
+} from "../api";
 
 function chunkArray(array, size) {
   const result = [];
@@ -26,14 +33,14 @@ export default function Home() {
   
 
   useEffect(() => {
-    (async () => {
-      const [eventRes, catRes, subCatRes, sectionRes, noticeRes] = await Promise.allSettled([
-        axios.get("/api/event/carousel"),
-        axios.get("/api/categories/recommend"),
-        axios.get("/api/subcategories"),
-        axios.get("/api/products/sections"),
-        axios.get("/api/notices/latest?limit=4"),
-      ]);
+  (async () => {
+    const [eventRes, catRes, subCatRes, sectionRes, noticeRes] = await Promise.allSettled([
+      getEventCarousel(),
+      getRecommendedCategories(),
+      getSubCategories(),    // ✅ 수정됨
+      getSections(),         // ✅ 수정됨
+      getLatestNotices(),
+    ]);
       if (eventRes.status === "fulfilled") setEvents(eventRes.value.data);
       if (catRes.status === "fulfilled") setCategories(catRes.value.data);
       if (subCatRes.status === "fulfilled") setAllSubCategories(subCatRes.value.data);

@@ -46,33 +46,37 @@ public class SecurityConfig {
                 )
 
                 // 권한 설정
+//                .authorizeHttpRequests(auth -> auth
+//                        // [정적 리소스]
+//                        .requestMatchers(
+//                                "/", "/index.html",
+//                                "/images/**", "/data/**", "/uploads/**",
+//                                "/static/**", "/css/**", "/js/**").permitAll()
+//                        // [회원가입, 로그인 등 인증 없이 허용해야 할 엔드포인트]
+//                        .requestMatchers(
+//                                "/api/users/join", "/api/users/login", "/api/users/check-*", "/api/users/check/*", "/api/users/check*",
+//                                "/api/email/send", "/api/email/verify",
+//                                "/api/event/**",
+//                                "/api/products/**", "/api/products/sections",
+//                                "/api/categories", "/api/categories/**",
+//                                "/api/subcategories", "/api/subcategories/**",
+//                                "/api/notices/**",
+//                                "/api/banner/**",
+//                                "/api/board/list",
+//                                "/api/board/detail/{id}",
+//                                "/api/chatting/**",
+//                                "/api/datarooms/**",
+//                                "/api/notices/",
+//                                "/api/notices/latest",
+//                                "/api/notices/{id}"
+//                        ).permitAll()
+//                        // [그 외 나머지는 인증 필요]
+//                        .anyRequest().authenticated()
+//                )
                 .authorizeHttpRequests(auth -> auth
-                        // [정적 리소스]
-                        .requestMatchers(
-                                "/", "/index.html",
-                                "/images/**", "/data/**", "/uploads/**",
-                                "/static/**", "/css/**", "/js/**").permitAll()
-                        // [회원가입, 로그인 등 인증 없이 허용해야 할 엔드포인트]
-                        .requestMatchers(
-                                "/api/users/join", "/api/users/login", "/api/users/check-*", "/api/users/check/*", "/api/users/check*",
-                                "/api/email/send", "/api/email/verify",
-                                "/api/event/**",
-                                "/api/products/**", "/api/products/sections",
-                                "/api/categories", "/api/categories/**",
-                                "/api/subcategories", "/api/subcategories/**",
-                                "/api/notices/**",
-                                "/api/banner/**",
-                                "/api/board/list",
-                                "/api/board/detail/{id}",
-                                "/api/chatting/**",
-                                "/api/datarooms/**",
-                                "/api/notices/",
-                                "/api/notices/latest",
-                                "/api/notices/{id}"
-                        ).permitAll()
-                        // [그 외 나머지는 인증 필요]
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
+
 
                 // 폼 로그인/로그아웃은 REST API에서 직접 구현하므로 비활성화
                 .formLogin(form -> form.disable())

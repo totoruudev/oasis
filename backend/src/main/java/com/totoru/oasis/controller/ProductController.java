@@ -100,9 +100,10 @@ public class ProductController {
 
     // 7. 카테고리 이름만 중복 없이
     @GetMapping("/categories")
-    public ResponseEntity<List<String>> getCategories() {
-        return ResponseEntity.ok(productRepository.findDistinctCategories());
+    public ResponseEntity<List<Category>> getCategories() {
+        return ResponseEntity.ok(productRepository.findDistinctCategoryEntities());
     }
+
 
     // 8. 상품 상세(숫자만 허용)
     @GetMapping("/{id:\\d+}")
