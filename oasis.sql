@@ -121,3 +121,150 @@ INSERT INTO product (name, category_id, sub_category_id, price, description, thu
 ('GAP 머스크멜론(2kg)', 1, 2, 12000, 'GAP 머스크멜론 2kg', 'musk_melon2_thumb.jpg', 'musk_melon2_detail.jpg', 29, NOW(), true, 0),
 ('GAP 머스크멜론(1.6kg)', 1, 2, 10500, 'GAP 머스크멜론 1.6kg', 'musk_melon16_thumb.jpg', 'musk_melon16_detail.jpg', 30, NOW(), true, 0);
 
+select * from product;
+SELECT * FROM category;
+SELECT * FROM sub_category;
+DELETE FROM product WHERE category_id IS NULL;
+SELECT id, name, category_id FROM product WHERE category_id IS NULL;
+
+-- 농산 (1)
+UPDATE sub_category SET category_id = 1 WHERE id IN (1, 6, 14, 15, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 61, 100);
+
+-- 축산 (2)
+UPDATE sub_category SET category_id = 2 WHERE id IN (2, 17, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47);
+
+-- 수산 (3)
+UPDATE sub_category SET category_id = 3 WHERE id IN (3, 16, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76);
+
+-- 간편식 (4)
+UPDATE sub_category SET category_id = 4 WHERE id IN (4, 7, 8, 9, 12, 13, 18, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 62, 77);
+
+-- 간식 (5)
+UPDATE sub_category SET category_id = 5 WHERE id IN (5, 10, 11, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 95, 96, 97, 98, 99, 101, 102, 103, 104, 105, 106, 107);
+
+SELECT * FROM product WHERE category_id IS NULL;
+SELECT id, name, category_id FROM sub_category WHERE category_id IS NULL;
+SELECT * FROM category WHERE name IS NULL;
+
+
+SELECT id, name, category_id, sub_category_id
+FROM product
+WHERE category_id NOT IN (SELECT id FROM category)
+   OR sub_category_id NOT IN (SELECT id FROM sub_category);
+   
+   SELECT p.id, p.name, c.name AS category_name
+FROM product p
+JOIN category c ON p.category_id = c.id
+WHERE c.name IN ('농산', '축산', '수산', '간편식', '간식');
+
+SELECT p.id, p.name, p.active, c.id as category_id, c.name as category_name
+FROM product p
+JOIN category c ON p.category_id = c.id
+WHERE p.active = true AND c.name IN ('채소', '과일', '수산', '축산', '국', '반찬', '간편식', '빵', '잼');
+
+SELECT name FROM category WHERE name IN (
+  '무항생제한돈', '무항생제한우', '유정란', '알류', '한돈', '한우', '닭', '소고기', 
+  '오리', '유기농소고기', '족발', '양념육', '육가공', '제주돼지'
+);
+
+INSERT INTO product (
+  active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
+) VALUES
+
+-- 유정란/알류 (서브카테고리 34: 유정란)
+(1, NOW(), '깐 메추리알(450g)', 10, 7980, '', 'egg_quail_450g_detail.jpg', 'egg_quail_450g_thumb.jpg', 2, 34, 0),
+(1, NOW(), '동물복지 유정 반숙란 10구', 22, 6950, '', 'egg_halfboiled_10_detail.jpg', 'egg_halfboiled_10_thumb.jpg', 2, 34, 0),
+(1, NOW(), '완전방사 동물복지 유정란 (10구)', 30, 4300, '', 'egg_free_10_detail.jpg', 'egg_free_10_thumb.jpg', 2, 34, 0),
+(1, NOW(), '신선한 깐메추리알(270g)', 20, 3840, '', 'egg_quail_270g_detail.jpg', 'egg_quail_270g_thumb.jpg', 2, 34, 0),
+(1, NOW(), '동물복지 구운 유정란 6구(258g이상)', 24, 3800, '', 'egg_baked_6_detail.jpg', 'egg_baked_6_thumb.jpg', 2, 34, 0),
+(1, NOW(), '동물복지 구운 유정란 4구(172g이상)', 32, 2900, '', 'egg_baked_4_detail.jpg', 'egg_baked_4_thumb.jpg', 2, 34, 0),
+(1, NOW(), 'NON-GMO 동물복지 유정란(난각번호2번)', 21, 5300, '', 'egg_nongmo_2_detail.jpg', 'egg_nongmo_2_thumb.jpg', 2, 34, 0),
+(1, NOW(), '동물복지 구운 유정란 20구(860g이상)', 22, 10100, '', 'egg_baked_20_detail.jpg', 'egg_baked_20_thumb.jpg', 2, 34, 0),
+
+-- 무항생제한우 (서브카테고리 36)
+(1, NOW(), '무항생제 신선한우 등심 (구이용, 200g)', 36, 22900, '', 'beef_fresh_loin_200g_detail.jpg', 'beef_fresh_loin_200g_thumb.jpg', 2, 36, 0),
+(1, NOW(), '무항생제 신선한우 채끝 (스테이크용, 200g)', 35, 26900, '', 'beef_fresh_striploin_200g_detail.jpg', 'beef_fresh_striploin_200g_thumb.jpg', 2, 36, 0),
+(1, NOW(), '무항생제 신선한우 국거리 (300g)', 26, 14900, '', 'beef_fresh_soupmeat_300g_detail.jpg', 'beef_fresh_soupmeat_300g_thumb.jpg', 2, 36, 0),
+(1, NOW(), '1등급이상 무항생제 한우 불고기용 (300g/냉장)', 39, 12800, '', 'beef_fresh_bulgogi_300g_detail.jpg', 'beef_fresh_bulgogi_300g_thumb.jpg', 2, 36, 0),
+(1, NOW(), '무항생제 신선한우 안심 (스테이크용, 200g)', 10, 41900, '', 'beef_fresh_tenderloin_200g_detail.jpg', 'beef_fresh_tenderloin_200g_thumb.jpg', 2, 36, 0),
+(1, NOW(), '무항생제 한우 우둔 다짐육(1kg)', 46, 41000, '', 'beef_fresh_groundround_1kg_detail.jpg', 'beef_fresh_groundround_1kg_thumb.jpg', 2, 36, 0),
+(1, NOW(), '무항생제 한우 등심 구이용(300g)', 25, 33800, '', 'beef_fresh_loin_300g_detail.jpg', 'beef_fresh_loin_300g_thumb.jpg', 2, 36, 0),
+(1, NOW(), '무항생제 신선한우 부채살 (구이용, 200g)', 18, 29900, '', 'beef_fresh_chuckflap_200g_detail.jpg', 'beef_fresh_chuckflap_200g_thumb.jpg', 2, 36, 0),
+
+-- 무항생제한돈 (서브카테고리 37)
+(1, NOW(), '무항생제 한돈 삼겹살(수육용, 1kg)｜목우촌', 21, 33800, '', 'pork_fresh_belly_1kg_detail.jpg', 'pork_fresh_belly_1kg_thumb.jpg', 2, 37, 0),
+(1, NOW(), '무항생제 한돈 통항정살 구이/수육용(500g)', 2, 32000, '', 'pork_fresh_jowl_500g_detail.jpg', 'pork_fresh_jowl_500g_thumb.jpg', 2, 37, 0),
+(1, NOW(), '무항생제 우리한돈 삼겹살(수육용/1kg)ㅣ우리농장', 14, 28800, '', 'pork_fresh_belly_ourfarm_1kg_detail.jpg', 'pork_fresh_belly_ourfarm_1kg_thumb.jpg', 2, 37, 0),
+(1, NOW(), '무항생제 한돈 찜갈비(1kg)', 16, 19900, '', 'pork_fresh_steamedribs_1kg_detail.jpg', 'pork_fresh_steamedribs_1kg_thumb.jpg', 2, 37, 0),
+(1, NOW(), '무항생제 한돈 목심 구이용(500g)', 18, 18500, '', 'pork_fresh_neck_500g_detail.jpg', 'pork_fresh_neck_500g_thumb.jpg', 2, 37, 0),
+(1, NOW(), '무항생제 한돈 삼겹살 수육용(500g)', 22, 18500, '', 'pork_fresh_belly_500g_detail.jpg', 'pork_fresh_belly_500g_thumb.jpg', 2, 37, 0),
+(1, NOW(), '무항생제 한돈 목심대패(500g)', 18, 18500, '', 'pork_fresh_slicedneck_500g_detail.jpg', 'pork_fresh_slicedneck_500g_thumb.jpg', 2, 37, 0),
+(1, NOW(), '무항생제 한돈 삼겹살 구이용(500g)', 22, 18500, '', 'pork_fresh_grilledbelly_500g_detail.jpg', 'pork_fresh_grilledbelly_500g_thumb.jpg', 2, 37, 0),
+
+-- 한우 (38)
+(1, NOW(), '1등급이상 한우 국거리용 세절(300g/냉장)', 50, 10900, '', 'beef_korean_soupcut_300g_detail.jpg', 'beef_korean_soupcut_300g_thumb.jpg', 2, 38, 0),
+(1, NOW(), '1등급이상 한우 다짐육 (200g/냉장)', 38, 7400, '', 'beef_korean_ground_200g_detail.jpg', 'beef_korean_ground_200g_thumb.jpg', 2, 38, 0),
+(1, NOW(), '[특가] 1등급이상 한우 갈비살 (200g/냉장)', 43, 22500, '', 'beef_korean_rib_200g_detail.jpg', 'beef_korean_rib_200g_thumb.jpg', 2, 38, 0),
+(1, NOW(), '미경산한우 1+등급 채끝 구이용(200g)', 23, 29900, '', 'beef_korean1p_striploin_200g_detail.jpg', 'beef_korean1p_striploin_200g_thumb.jpg', 2, 38, 0),
+(1, NOW(), '미경산한우 1+등급 등심 구이용(200g)', 31, 26900, '', 'beef_korean1p_loin_200g_detail.jpg', 'beef_korean1p_loin_200g_thumb.jpg', 2, 38, 0),
+(1, NOW(), '1등급이상 화식한우 등심 구이용(300g)', 46, 24900, '', 'beef_korean_fire_loin_300g_detail.jpg', 'beef_korean_fire_loin_300g_thumb.jpg', 2, 38, 0),
+(1, NOW(), '1등급이상 화식한우 채끝 구이용(200g)', 52, 18900, '', 'beef_korean_fire_striploin_200g_detail.jpg', 'beef_korean_fire_striploin_200g_thumb.jpg', 2, 38, 0),
+(1, NOW(), '1등급이상 화식한우 양지 국거리(300g)', 42, 17900, '', 'beef_korean_fire_brisket_300g_detail.jpg', 'beef_korean_fire_brisket_300g_thumb.jpg', 2, 38, 0),
+
+-- 한돈 (39)
+(1, NOW(), '한돈 대패 생삼겹살(냉장/300g)', 20, 11500, '', 'pork_korean_sliced_belly_300g_detail.jpg', 'pork_korean_sliced_belly_300g_thumb.jpg', 2, 39, 0),
+(1, NOW(), '한돈 삼겹+목살 멀티팩(1kg)', 11, 30900, '', 'pork_korean_belly_neck_1kg_detail.jpg', 'pork_korean_belly_neck_1kg_thumb.jpg', 2, 39, 0),
+(1, NOW(), '한돈 등갈비 (1kg)', 27, 26900, '', 'pork_korean_ribs_1kg_detail.jpg', 'pork_korean_ribs_1kg_thumb.jpg', 2, 39, 0),
+(1, NOW(), '한돈 대패 항정살(냉장/300g)', 9, 19900, '', 'pork_korean_sliced_jowl_300g_detail.jpg', 'pork_korean_sliced_jowl_300g_thumb.jpg', 2, 39, 0),
+(1, NOW(), '한돈 두꺼운 삼겹살 (500g)', 10, 17900, '', 'pork_korean_thick_belly_500g_detail.jpg', 'pork_korean_thick_belly_500g_thumb.jpg', 2, 39, 0),
+(1, NOW(), '한돈 칼집삼겹살 구이용(500g)', 10, 17900, '', 'pork_korean_scored_belly_500g_detail.jpg', 'pork_korean_scored_belly_500g_thumb.jpg', 2, 39, 0),
+(1, NOW(), '[특가] 무항생제 한돈 수제양념갈비 (800g)', 26, 16900, '', 'pork_korean_special_sauce_rib_800g_detail.jpg', 'pork_korean_special_sauce_rib_800g_thumb.jpg', 2, 39, 0),
+(1, NOW(), '우리돼지 삼겹살 구이용(500g)', 14, 14450, '', 'pork_our_belly_grill_500g_detail.jpg', 'pork_our_belly_grill_500g_thumb.jpg', 2, 39, 0),
+
+-- 제주돼지 (40)
+(1, NOW(), '제주 흑돼지 간장 불고기(300g)', 37, 5480, '', 'pork_jeju_soy_bulgogi_300g_detail.jpg', 'pork_jeju_soy_bulgogi_300g_thumb.jpg', 2, 40, 0),
+(1, NOW(), '제주 흑돼지 고추장 불고기(300g)', 32, 5900, '', 'pork_jeju_chili_bulgogi_300g_detail.jpg', 'pork_jeju_chili_bulgogi_300g_thumb.jpg', 2, 40, 0),
+(1, NOW(), '제주돼지 삼겹살(샤브용, 300g)', 14, 15800, '', 'pork_jeju_belly_shabu_300g_detail.jpg', 'pork_jeju_belly_shabu_300g_thumb.jpg', 2, 40, 0),
+(1, NOW(), '제주 흑돼지 뒷다리살(불고기용, 500g)', 8, 7800, '', 'pork_jeju_ham_bulgogi_500g_detail.jpg', 'pork_jeju_ham_bulgogi_500g_thumb.jpg', 2, 40, 0),
+(1, NOW(), '제주돼지 앞다리살(불고기용, 500g)', 26, 13800, '', 'pork_jeju_shoulder_bulgogi_500g_detail.jpg', 'pork_jeju_shoulder_bulgogi_500g_thumb.jpg', 2, 40, 0),
+(1, NOW(), '제주 흑돼지 목살(300g)', 23, 17500, '', 'pork_jeju_neck_300g_detail.jpg', 'pork_jeju_neck_300g_thumb.jpg', 2, 40, 0),
+(1, NOW(), '제주돼지 목살(샤브용, 300g)', 14, 15800, '', 'pork_jeju_neck_shabu_300g_detail.jpg', 'pork_jeju_neck_shabu_300g_thumb.jpg', 2, 40, 0),
+(1, NOW(), '제주돼지 목살(구이용, 300g)', 14, 15800, '', 'pork_jeju_neck_grill_300g_detail.jpg', 'pork_jeju_neck_grill_300g_thumb.jpg', 2, 40, 0),
+
+-- 닭 (41) / 오리 (42)
+(1, NOW(), '무항생제 아랫날개 (윙/300g)', 24, 4900, '', 'chicken_fresh_wing_300g_detail.jpg', 'chicken_fresh_wing_300g_thumb.jpg', 2, 41, 0),
+(1, NOW(), '10無 무항생제 더건강한 오리훈제(400g)', 35, 10900, '', 'duck_fresh_smoked_400g_detail.jpg', 'duck_fresh_smoked_400g_thumb.jpg', 2, 42, 0),
+(1, NOW(), '춘천식 닭갈비 (2~3인분, 600g/냉장)', 34, 8400, '', 'chicken_chuncheon_rib_600g_detail.jpg', 'chicken_chuncheon_rib_600g_thumb.jpg', 2, 47, 0), -- 양념육
+(1, NOW(), '간장 닭갈비(2~3인분, 600g/냉장)', 34, 8400, '', 'chicken_soysauce_rib_600g_detail.jpg', 'chicken_soysauce_rib_600g_thumb.jpg', 2, 47, 0), -- 양념육
+(1, NOW(), '무항생제 닭가슴살 두배더 절단육 (1.3kg)', 34, 7900, '', 'chicken_fresh_breast_1_3kg_detail.jpg', 'chicken_fresh_breast_1_3kg_thumb.jpg', 2, 41, 0),
+(1, NOW(), '무항생제 오리 다리살 슬라이스 (350g)', 27, 7200, '', 'duck_fresh_leg_350g_detail.jpg', 'duck_fresh_leg_350g_thumb.jpg', 2, 42, 0),
+(1, NOW(), '[특가] 춘천 순살 닭갈비 (400g)', 26, 7100, '', 'chicken_chuncheon_boneless_400g_detail.jpg', 'chicken_chuncheon_boneless_400g_thumb.jpg', 2, 47, 0), -- 양념육
+(1, NOW(), '자연실록 치킨스테이크 (250g)', 35, 4500, '', 'chicken_nature_steak_250g_detail.jpg', 'chicken_nature_steak_250g_thumb.jpg', 2, 41, 0),
+
+-- 소고기 (43)
+(1, NOW(), '티본 스테이크(550g)', 12, 49500, '', 'beef_tbone_550g_detail.jpg', 'beef_tbone_550g_thumb.jpg', 2, 43, 0),
+(1, NOW(), '엘본 스테이크(450g)', 6, 45500, '', 'beef_elbone_450g_detail.jpg', 'beef_elbone_450g_thumb.jpg', 2, 43, 0),
+(1, NOW(), 'U.S.비프 우삼겹(냉동/500g)', 13, 9990, '', 'beef_us_brisket_500g_detail.jpg', 'beef_us_brisket_500g_thumb.jpg', 2, 43, 0),
+
+-- 유기농소고기 (44)
+(1, NOW(), '호주 청정 오가닉 소고기 등심(250g)', 26, 17900, '', 'beef_au_organic_loin_250g_detail.jpg', 'beef_au_organic_loin_250g_thumb.jpg', 2, 44, 0),
+(1, NOW(), '호주 청정 오가닉 소고기 채끝(200g)', 9, 16900, '', 'beef_au_organic_striploin_200g_detail.jpg', 'beef_au_organic_striploin_200g_thumb.jpg', 2, 44, 0),
+(1, NOW(), '호주 청정 오가닉 소고기 불고기(300g)', 17, 14500, '', 'beef_au_organic_bulgogi_300g_detail.jpg', 'beef_au_organic_bulgogi_300g_thumb.jpg', 2, 44, 0),
+(1, NOW(), '호주 청정 오가닉 소고기 안심(200g)', 6, 29900, '', 'beef_au_organic_tenderloin_200g_detail.jpg', 'beef_au_organic_tenderloin_200g_thumb.jpg', 2, 44, 0),
+(1, NOW(), '호주 청정 오가닉 소고기 다짐육(200g)', 9, 12900, '', 'beef_au_organic_ground_200g_detail.jpg', 'beef_au_organic_ground_200g_thumb.jpg', 2, 44, 0),
+
+-- 육가공 (45) / 족발 (46)
+(1, NOW(), '[존쿡델리미트] 팜프레시 전G 베이컨(100g)', 7, 5880, '', 'ham_johncook_bacon_100g_detail.jpg', 'ham_johncook_bacon_100g_thumb.jpg', 2, 45, 0),
+(1, NOW(), '자연별곡 궁중 소불고기(4인분,600g)', 8, 16300, '', 'beef_nature_bulgogi_600g_detail.jpg', 'beef_nature_bulgogi_600g_thumb.jpg', 2, 45, 0),
+(1, NOW(), '자연공법 프리미엄 훈제오리(400g)', 15, 13500, '', 'duck_premium_smoked_400g_detail.jpg', 'duck_premium_smoked_400g_thumb.jpg', 2, 45, 0),
+(1, NOW(), '참숯 등갈비 (500g)', 24, 12900, '', 'pork_chamsut_rib_500g_detail.jpg', 'pork_chamsut_rib_500g_thumb.jpg', 2, 47, 0), -- 양념육
+(1, NOW(), '바베큐폭립 (500g)', 25, 11900, '', 'pork_bbq_rib_500g_detail.jpg', 'pork_bbq_rib_500g_thumb.jpg', 2, 47, 0), -- 양념육
+(1, NOW(), '참맛다한 유황먹인 오리훈제(400g)', 25, 11800, '', 'duck_uhwang_smoked_400g_detail.jpg', 'duck_uhwang_smoked_400g_thumb.jpg', 2, 45, 0),
+(1, NOW(), '오리지널 쪽갈비 (500g)', 27, 10900, '', 'pork_original_rib_500g_detail.jpg', 'pork_original_rib_500g_thumb.jpg', 2, 47, 0), -- 양념육
+
+-- 양념육 (47)
+(1, NOW(), '[특가] 맛있는 숯불 양념 막창(200g/냉장)', 29, 6980, '', 'pork_yangnyeom_makchang_200g_detail.jpg', 'pork_yangnyeom_makchang_200g_thumb.jpg', 2, 47, 0),
+(1, NOW(), '동물복지 한돈 제육볶음(500g) l 하이포크', 33, 9900, '', 'pork_welfare_jeyuk_500g_detail.jpg', 'pork_welfare_jeyuk_500g_thumb.jpg', 2, 47, 0),
+(1, NOW(), '[특가] 동물복지 소금구이 닭갈비 (400g)', 19, 8900, '', 'chicken_salt_rib_400g_detail.jpg', 'chicken_salt_rib_400g_thumb.jpg', 2, 47, 0),
+(1, NOW(), '구어조은닭 순살 치킨(500g/냉장)', 28, 7900, '', 'chicken_grilled_boneless_500g_detail.jpg', 'chicken_grilled_boneless_500g_thumb.jpg', 2, 47, 0)
+;

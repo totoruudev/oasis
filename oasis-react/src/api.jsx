@@ -23,4 +23,4 @@ export const getEventCarousel = () => axiosPublic.get("/api/event/carousel");
 export const getRecommendedCategories = () => axiosPublic.get("/api/categories/recommend");
 export const getLatestNotices = () => axiosPublic.get("/api/notices/latest?limit=4");
 export const getSections = () => axiosPublic.get("/api/products/sections");
-export const getSubCategories = () => axiosPublic.get("/api/subcategories");
+export const getSubCategories = () => axiosPublic.get("/api/products/subcategories");
