@@ -1,10 +1,11 @@
 package com.totoru.oasis.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.totoru.oasis.entity.Product;
 import com.totoru.oasis.entity.Category;
+import com.totoru.oasis.entity.Product;
 import com.totoru.oasis.repository.CategoryRepository;
 import com.totoru.oasis.repository.ProductRepository;
+import com.totoru.oasis.repository.SubCategoryRepository;
 import com.totoru.oasis.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -25,6 +26,7 @@ public class ProductController {
     private final ProductService productService;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
 
     // 1. 섹션별 상품(메인에서 여러 섹션 단위로 조회)
     @GetMapping("/sections")
@@ -124,5 +126,11 @@ public class ProductController {
     public ResponseEntity<Void> delete(@PathVariable("id") Long id) {
         productService.delete(id);
         return ResponseEntity.ok().build();
+    }
+
+    // 10. 서브카테고리 전체 조회
+    @GetMapping("/subcategories")
+    public ResponseEntity<?> getSubCategories() {
+        return ResponseEntity.ok(productService.getAllSubCategories());
     }
 }

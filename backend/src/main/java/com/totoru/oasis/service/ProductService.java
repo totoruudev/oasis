@@ -1,8 +1,10 @@
 package com.totoru.oasis.service;
 
 import com.totoru.oasis.entity.Product;
+import com.totoru.oasis.entity.SubCategory;
 import com.totoru.oasis.repository.OrderItemRepository;
 import com.totoru.oasis.repository.ProductRepository;
+import com.totoru.oasis.repository.SubCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +21,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final OrderItemRepository orderItemRepository;
+    private final SubCategoryRepository subCategoryRepository;
 
     private final String uploadDir = "/uploads";
 
@@ -28,6 +31,10 @@ public class ProductService {
 
     public List<Product> findAll() {
         return productRepository.findAll();
+    }
+
+    public List<SubCategory> getAllSubCategories() {
+        return subCategoryRepository.findAll();
     }
 
     public Optional<Product> findById(Long id) {
@@ -121,7 +128,8 @@ public class ProductService {
     public Map<String, Object> getSectionedProducts() {
         System.out.println("💬 섹션 요청 시작");
 
-        Map<String, List<String>> sectionCategoryMap = Map.ofEntries(
+        // 1. 섹션명 → 서브카테고리 이름 리스트 (Map)
+        Map<String, List<String>> sectionSubCategoryMap = Map.ofEntries(
                 Map.entry("특가로 만나는 건강한 신상품", List.of("채소", "과일", "수산", "축산", "국", "반찬", "간편식", "빵", "잼", "쌀", "견과", "양념", "면", "간식", "음료", "생활", "주방", "브랜드상품")),
                 Map.entry("우수 상품 추천", List.of("농산", "수산", "축산", "반찬", "간편식", "제철 음식", "산지직송")),
                 Map.entry("신선하게 자라난 농산물", List.of("GAP", "우리땅과일", "수입과일", "친환경채소", "우리땅채소", "샐러드채소", "즙용채소", "간편채소", "버섯", "건나물", "쌀", "잡곡", "견과", "선식")),
@@ -134,17 +142,21 @@ public class ProductService {
 
         Map<String, Object> result = new LinkedHashMap<>();
 
-        sectionCategoryMap.forEach((sectionTitle, categories) -> {
-            System.out.println("\n🔍 섹션명: " + sectionTitle);
-            System.out.println("📦 대상 카테고리: " + categories);
+        sectionSubCategoryMap.forEach((sectionTitle, subCategories) -> {
+            System.out.println("🔎 섹션: " + sectionTitle + " | 탭 파라미터: " + subCategories);
 
-            List<Product> products = productRepository.findActiveByValidCategoryNames(categories);
+            // 2. 리포지토리 쿼리만 서브카테고리 기준으로 호출!
+            List<Product> products = productRepository.findActiveByValidCategoryOrSubCategoryNames(subCategories);
+            System.out.println("⛳️ [쿼리 결과] 상품 개수: " + products.size());
+            products.forEach(p -> System.out.println("상품명: " + p.getName() + " | 서브카테고리: " + (p.getSubCategory() != null ? p.getSubCategory().getName() : "null")));
+
+
             System.out.println("✅ 전체 상품 개수: " + products.size());
 
             List<Product> sectionProducts = products.stream()
                     .limit(4)
-                    .peek(p -> System.out.println("🧾 상품명: " + p.getName() + " | 카테고리: " +
-                            (p.getCategory() != null ? "'" + p.getCategory().getName() + "'" : "NULL")))
+                    .peek(p -> System.out.println("🧾 상품명: " + p.getName() +
+                            " | 서브카테고리: " + (p.getSubCategory() != null ? "'" + p.getSubCategory().getName() + "'" : "NULL")))
                     .collect(Collectors.toList());
 
             System.out.println("🎯 최종 노출 상품 수 (limit 4): " + sectionProducts.size());
@@ -155,6 +167,7 @@ public class ProductService {
         System.out.println("\n🎉 섹션 요청 완료");
         return result;
     }
+
 
 
 
