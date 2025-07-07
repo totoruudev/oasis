@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import { motion } from "framer-motion";
@@ -18,12 +18,19 @@ function chunkArray(array, size) {
   );
 }
 
+function getProductImageUrl(path) {
+  if (!path) return "/default_thumb.jpg";
+  if (path.startsWith("/")) return `http://localhost:8094${path}`;
+  return `http://localhost:8094/images/products/${path}`;
+}
+
 export default function Home() {
   const [events, setEvents] = useState([]);
   const [categories, setCategories] = useState([]);
   const [activeTabs, setActiveTabs] = useState(Array(sectionGroups.length).fill(0));
   const [sectionProducts, setSectionProducts] = useState({});
   const [notices, setNotices] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -42,17 +49,15 @@ export default function Home() {
 
   // 섹션별 탭 필터링
   const filterSectionProducts = (section, sectionIdx) => {
-  const products = sectionProducts[section.title]?.products ?? [];
-  if (!section.buttonGroups.length) return products.slice(0, 4);
+    const products = sectionProducts[section.title]?.products ?? [];
+    if (!section.buttonGroups.length) return products.slice(0, 4);
 
-  const keys = section.buttonGroups[activeTabs[sectionIdx]].keys;
-  return products.filter(prod => {
-    const sub = prod.subCategory?.name ?? "";
-    const cat = prod.category?.name ?? "";
-    // 아래 한 줄이 핵심!!
-    return keys.some(key => sub.includes(key) || cat.includes(key));
-  }).slice(0, 4);
-};
+    const keys = section.buttonGroups[activeTabs[sectionIdx]].keys;
+    return products.filter(prod =>
+      prod.subCategoryId && keys.includes(prod.subCategoryId)
+    ).slice(0, 4);
+  };
+
 
 
   // 이벤트 캐러셀 그룹핑
@@ -160,15 +165,20 @@ export default function Home() {
               </div>
               <div className="row row-cols-2 row-cols-md-4 g-3">
                 {filterSectionProducts(section, sectionIdx).map(prod => (
-                  <div className="col" key={prod.id}>
+                  <div
+                    className="col"
+                    key={prod.id}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => navigate(`/product/${prod.id}`)}
+                  >
                     <div className="card h-100 border-0">
-                      <div className="position-relative overflow-hidden">
+                      <div className="position-relative overflow-hidden" style={{ width: 250, height: 300, margin: "0 auto" }}>
                         <motion.img
                           whileHover={{ scale: 1.1 }}
-                          src={prod.thumbnailimg}
+                          src={getProductImageUrl(prod.thumbnailimg)}
                           alt={prod.name}
                           className="card-img-top"
-                          style={{ transition: "transform 0.2s" }}
+                          style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.2s" }}
                         />
                       </div>
                       <div className="card-body">

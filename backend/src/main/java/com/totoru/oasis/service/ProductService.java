@@ -1,5 +1,6 @@
 package com.totoru.oasis.service;
 
+import com.totoru.oasis.dto.ProductDto;
 import com.totoru.oasis.entity.Product;
 import com.totoru.oasis.entity.SubCategory;
 import com.totoru.oasis.repository.OrderItemRepository;
@@ -29,16 +30,20 @@ public class ProductService {
         return productRepository.save(product);
     }
 
-    public List<Product> findAll() {
-        return productRepository.findAll();
+    public List<ProductDto> findAll() {
+        return productRepository.findAll()
+                .stream()
+                .map(ProductDto::from)
+                .collect(Collectors.toList());
     }
 
     public List<SubCategory> getAllSubCategories() {
         return subCategoryRepository.findAll();
     }
 
-    public Optional<Product> findById(Long id) {
-        return productRepository.findById(id);
+    public Optional<ProductDto> findById(Long id) {
+        return productRepository.findById(id)
+                .map(ProductDto::from);
     }
 
     public Optional<Product> update(Long id, Product updatedProduct) {
@@ -123,52 +128,28 @@ public class ProductService {
     }
 
     // ------------------------------
-    // 🔥 섹션별 상품(섹션 타이틀 -> 상품목록) 리턴
+    // 섹션별 상품(섹션 타이틀 -> 상품목록) 리턴 (DTO 변환)
     // ------------------------------
     public Map<String, Object> getSectionedProducts() {
-        System.out.println("💬 섹션 요청 시작");
-
-        // 1. 섹션명 → 서브카테고리 이름 리스트 (Map)
-        Map<String, List<String>> sectionSubCategoryMap = Map.ofEntries(
-                Map.entry("특가로 만나는 건강한 신상품", List.of("채소", "과일", "수산", "축산", "국", "반찬", "간편식", "빵", "잼", "쌀", "견과", "양념", "면", "간식", "음료", "생활", "주방", "브랜드상품")),
-                Map.entry("우수 상품 추천", List.of("농산", "수산", "축산", "반찬", "간편식", "제철 음식", "산지직송")),
-                Map.entry("신선하게 자라난 농산물", List.of("GAP", "우리땅과일", "수입과일", "친환경채소", "우리땅채소", "샐러드채소", "즙용채소", "간편채소", "버섯", "건나물", "쌀", "잡곡", "견과", "선식")),
-                Map.entry("농장에서 식탁까지 신선축산", List.of("유정란", "알류", "무항생제한우", "무항생제한돈", "한우", "한돈", "제주돼지", "닭", "오리", "소고기", "유기농소고기", "육가공", "족발", "양념육")),
-                Map.entry("내 몸은 내가 챙긴다! 건강/음료", List.of("건강즙", "생수", "커피", "식혜", "음료", "영양제", "천연과즙", "액상", "엑기스", "홍삼", "인삼", "죽염", "흑마늘", "환", "곡물", "차류")),
-                Map.entry("바다향 가득 품은 수산물", List.of("새벽수산", "일반생선", "연어", "참치", "오징어", "알류", "새우", "조개", "멸치", "액젓", "젓갈", "김", "해조", "건어물", "어묵", "가공")),
-                Map.entry("요즘 인기있는 간식", List.of("과자", "빵", "떡", "한과", "엿", "두유", "유제품", "선식", "사탕", "젤리", "초콜릿", "시리얼")),
-                Map.entry("더 건강하게! 더 맛있게! 양념", List.of("파스타", "면", "밀가루", "분말", "오일", "참기름", "케찹", "잼", "소금", "설탕", "향신료", "된장", "장류", "참깨", "고춧가루", "식초", "조청", "꿀", "소스", "드레싱", "육수"))
+        // 섹션별로 서브카테고리 id를 사용
+        Map<String, List<Long>> sectionSubCategoryIdMap = Map.ofEntries(
+                Map.entry("신선하게 자라난 농산물", List.of(1L,2L,3L,4L,5L,6L,7L,8L,9L,10L,11L,12L,13L,14L)),
+                Map.entry("농장에서 식탁까지 신선축산", List.of(15L,16L,17L,18L,19L,20L,21L,22L,23L,24L,25L,26L,27L,28L)),
+                Map.entry("바다향 가득 품은 수산물", List.of(29L,30L,31L,32L,33L,34L,35L,36L,37L,38L,39L,40L,41L,42L,43L)),
+                Map.entry("요즘 인기있는 간식", List.of(44L,45L,46L,47L,48L,49L,50L,51L,52L,53L,54L,55L))
         );
 
         Map<String, Object> result = new LinkedHashMap<>();
 
-        sectionSubCategoryMap.forEach((sectionTitle, subCategories) -> {
-            System.out.println("🔎 섹션: " + sectionTitle + " | 탭 파라미터: " + subCategories);
-
-            // 2. 리포지토리 쿼리만 서브카테고리 기준으로 호출!
-            List<Product> products = productRepository.findActiveByValidCategoryOrSubCategoryNames(subCategories);
-            System.out.println("⛳️ [쿼리 결과] 상품 개수: " + products.size());
-            products.forEach(p -> System.out.println("상품명: " + p.getName() + " | 서브카테고리: " + (p.getSubCategory() != null ? p.getSubCategory().getName() : "null")));
-
-
-            System.out.println("✅ 전체 상품 개수: " + products.size());
-
-            List<Product> sectionProducts = products.stream()
+        sectionSubCategoryIdMap.forEach((sectionTitle, subCategoryIds) -> {
+            List<Product> products = productRepository.findActiveBySubCategoryIds(subCategoryIds);
+            List<ProductDto> sectionProducts = products.stream()
                     .limit(4)
-                    .peek(p -> System.out.println("🧾 상품명: " + p.getName() +
-                            " | 서브카테고리: " + (p.getSubCategory() != null ? "'" + p.getSubCategory().getName() + "'" : "NULL")))
+                    .map(ProductDto::from)
                     .collect(Collectors.toList());
-
-            System.out.println("🎯 최종 노출 상품 수 (limit 4): " + sectionProducts.size());
-
             result.put(sectionTitle, Map.of("products", sectionProducts));
         });
 
-        System.out.println("\n🎉 섹션 요청 완료");
         return result;
     }
-
-
-
-
 }

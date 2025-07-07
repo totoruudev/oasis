@@ -85,7 +85,7 @@ public class ReviewController {
             Review review = objectMapper.readValue(reviewJson, Review.class);
 
             // 상품
-            Product product = productService.findById(productId)
+            Product product = productRepository.findById(productId)
                     .orElseThrow(() -> new RuntimeException("상품 없음"));
             review.setProduct(product);
 
