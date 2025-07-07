@@ -24,6 +24,13 @@ function getProductImageUrl(path) {
   return `http://localhost:8094/images/products/${path}`;
 }
 
+function getPrettyPrice(price, percent) {
+  if (!percent || percent === 0) return price;
+  const discounted = price * (1 - percent / 100);
+  // 100원 단위로 내림
+  return Math.floor(discounted / 100) * 100;
+}
+
 export default function Home() {
   const [events, setEvents] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -52,12 +59,27 @@ export default function Home() {
     const products = sectionProducts[section.title]?.products ?? [];
     if (!section.buttonGroups.length) return products.slice(0, 4);
 
+    // 탭별 필터 부분
     const keys = section.buttonGroups[activeTabs[sectionIdx]].keys;
-    return products.filter(prod =>
-      prod.subCategoryId && keys.includes(prod.subCategoryId)
-    ).slice(0, 4);
-  };
 
+    // ★ 이거 추가해서 타입과 값을 콘솔로 확인해봐
+    console.log(`[${section.title}] keys:`, keys, "(type:", typeof keys[0] + ")", "| products:", products);
+
+    return products.filter(prod => {
+      // 디버깅: 값/타입 모두 콘솔 출력
+      console.log(
+        `[${section.title}] id=${prod.id} name=${prod.name} subCategoryId=${prod.subCategoryId} (type:${typeof prod.subCategoryId})`
+      );
+
+      // (1) 일단 prod.subCategoryId, keys 모두 Number로 강제해서 비교!
+      const match = keys.map(Number).includes(Number(prod.subCategoryId));
+      if (!match) {
+        console.log(`[${section.title}] 제외됨: id=${prod.id} name=${prod.name} subCategoryId=${prod.subCategoryId} (type:${typeof prod.subCategoryId})`);
+      }
+      return match;
+    }).slice(0, 4);
+
+  };
 
 
   // 이벤트 캐러셀 그룹핑
@@ -166,28 +188,47 @@ export default function Home() {
               <div className="row row-cols-2 row-cols-md-4 g-3">
                 {filterSectionProducts(section, sectionIdx).map(prod => (
                   <div
-                    className="col"
+                    className="col product-card"
                     key={prod.id}
                     style={{ cursor: "pointer" }}
                     onClick={() => navigate(`/product/${prod.id}`)}
                   >
                     <div className="card h-100 border-0">
-                      <div className="position-relative overflow-hidden" style={{ width: 250, height: 300, margin: "0 auto" }}>
+                      <div className="img-wrap position-relative overflow-hidden mx-auto">
                         <motion.img
                           whileHover={{ scale: 1.1 }}
                           src={getProductImageUrl(prod.thumbnailimg)}
                           alt={prod.name}
                           className="card-img-top"
-                          style={{ width: "100%", height: "100%", objectFit: "cover", transition: "transform 0.2s" }}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            transition: "transform 0.2s"
+                          }}
                         />
                       </div>
                       <div className="card-body">
                         <h6 className="card-title">{prod.name}</h6>
-                        <div className="fw-bold mb-1">{prod.price?.toLocaleString()}원</div>
-                        {prod.percent > 0 && <span className="badge bg-danger">{prod.percent}%</span>}
+                        <div className="mb-1 d-flex align-items-end gap-2">
+                          {prod.percent > 0 && (
+                            <span className="discount-percent me-1">{prod.percent}%</span>
+                          )}
+                          <span className="sale-price fw-bold">
+                            {getPrettyPrice(prod.price, prod.percent).toLocaleString()}원
+                          </span>
+                          {prod.percent > 0 && (
+                            <span className="origin-price text-muted ms-1">
+                              <del>{prod.price?.toLocaleString()}원</del>
+                            </span>
+                          )}
+                        </div>
                       </div>
+
+
                     </div>
                   </div>
+
                 ))}
               </div>
             </div>

@@ -11,6 +11,38 @@
     transition: transform 0.2s;
 }
 
+/* 상품 카드 반응형 개선 */
+.product-card .img-wrap {
+    width: 100%;
+    aspect-ratio: 5/6;
+    max-width: 250px;
+    min-width: 0;
+    margin: 0 auto 0.3rem auto;
+    background: #fafafc;
+    border-radius: 0.9rem;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 카드 본문 타이틀, 폰트 크기 등 */
+.product-card .card-title {
+    font-size: 1.02em;
+    margin-bottom: 0.2rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.product-card .card-body {
+    padding: 0.7rem 0.3rem 0.4rem 0.3rem;
+}
+
+.product-card .fw-bold {
+    font-size: 1em;
+}
+
 .product-card img:hover {
     transform: scale(1.1);
 }
@@ -94,6 +126,32 @@
     border-color: #90b997;
 }
 
+.discount-percent {
+    color: #3da121;
+    font-weight: 700;
+    font-size: 1.09em;
+    letter-spacing: -0.5px;
+}
+
+.sale-price {
+    font-size: 1.14em;
+    font-weight: 700;
+}
+
+.origin-price {
+    font-size: 0.97em;
+    color: #aaa !important;
+    text-decoration: line-through;
+}
+
+.card-body .badge.bg-danger {
+    font-size: 0.85em;
+    font-weight: 600;
+    vertical-align: baseline;
+    background: #e43a34;
+}
+
+
 @media (max-width: 768px) {
 
     .category-main-box,
@@ -104,5 +162,24 @@
 
     .category-tab-list {
         gap: 0.2rem;
+    }
+
+    .product-card .img-wrap {
+        max-width: 140px;
+        min-width: 0;
+        aspect-ratio: 5/6;
+    }
+
+    .product-card .card-title {
+        font-size: 0.90em;
+    }
+
+    .product-card .card-body {
+        padding: 0.5rem 0.15rem 0.25rem 0.15rem;
+    }
+
+    .row-cols-2 .product-card,
+    .row-cols-md-4 .product-card {
+        margin-bottom: 1rem;
     }
 }
