@@ -169,9 +169,9 @@ SELECT id, name, category_id FROM product WHERE category_id IS NULL;
 
 select * from product;
 
-INSERT INTO product (
-  active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
-) VALUES
+-- INSERT INTO product (
+--   active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
+-- ) VALUES
 
 DELETE FROM product
 WHERE id NOT IN (
