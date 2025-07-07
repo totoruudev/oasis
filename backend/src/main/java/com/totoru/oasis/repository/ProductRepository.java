@@ -24,13 +24,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT DISTINCT p.category FROM Product p")
     List<Category> findDistinctCategoryEntities();
 
-//    @Query("SELECT p FROM Product p WHERE p.active = true AND p.subCategory IS NOT NULL AND p.subCategory.name IN :names ORDER BY p.createdAt DESC")
-//    List<Product> findActiveByValidSubCategoryNames(@Param("names") List<String> names);
-
     @Query("SELECT p FROM Product p " +
-            "WHERE p.active = true AND " +
-            "(p.category.name IN :names OR p.subCategory.name IN :names)")
-    List<Product> findActiveByValidCategoryOrSubCategoryNames(@Param("names") List<String> names);
+            "WHERE p.active = true AND p.subCategory.id IN :subCategoryIds")
+    List<Product> findActiveBySubCategoryIds(@Param("subCategoryIds") List<Long> subCategoryIds);
 
 
 
