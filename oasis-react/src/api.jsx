@@ -24,3 +24,8 @@ export const getRecommendedCategories = () => axiosPublic.get("/api/categories/r
 export const getLatestNotices = () => axiosPublic.get("/api/notices/latest?limit=4");
 export const getSections = () => axiosPublic.get("/api/products/sections");
 export const getSubCategories = () => axiosPublic.get("/api/products/subcategories");
+export const getCart = () => axiosInstance.get("/api/cart");
+export const addToCart = (data) => axiosInstance.post("/api/cart", data);
+export const updateCartItem = (id, data) => axiosInstance.put(`/api/cart/${id}`, data);
+export const removeCartItem = (id) => axiosInstance.delete(`/api/cart/${id}`);
+export const clearCart = () => axiosInstance.delete("/api/cart/clear");

@@ -4,6 +4,8 @@ import com.totoru.oasis.dto.ProductDto;
 import com.totoru.oasis.entity.Product;
 import com.totoru.oasis.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,5 +56,19 @@ public class ProductService {
                 .stream()
                 .map(ProductDto::from)
                 .collect(Collectors.toList());
+    }
+
+    // [상품 상세 조회]
+    @Transactional(readOnly = true)
+    public ProductDto getProductById(Long id) {
+        Product product = productRepository.findByIdAndActiveTrue(id)
+                .orElseThrow(() -> new NoSuchElementException("해당 상품을 찾을 수 없습니다."));
+        return ProductDto.from(product);
+    }
+
+    // 카테고리별 상품(페이징, id순)
+    public Page<ProductDto> getProductsByCategory(Long categoryId, Pageable pageable) {
+        Page<Product> page = productRepository.findByCategoryIdAndActiveTrue(categoryId, pageable);
+        return page.map(ProductDto::from);
     }
 }

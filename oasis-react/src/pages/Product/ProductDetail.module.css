@@ -1,0 +1,196 @@
+/* ProductDetail.module.css */
+
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 56px;
+    align-items: flex-start;
+    padding: 36px 0 0 0;
+    min-height: 440px;
+}
+
+.leftCol {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.mainThumbBox {
+    background: #fff;
+    border: 1.5px solid #eee;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 340px;
+    height: 340px;
+    box-shadow: 0 1px 8px 0 rgba(50, 50, 60, 0.04);
+}
+
+.mainThumb {
+    width: 88%;
+    height: 88%;
+    object-fit: contain;
+    border-radius: 10px;
+}
+
+.subThumbList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.subThumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background: #fafafa;
+    cursor: pointer;
+    transition: border 0.2s, box-shadow 0.18s;
+}
+
+.subThumb.selected,
+.subThumb:hover {
+    border: 2.5px solid #1e6b39;
+    box-shadow: 0 2px 10px 0 rgba(50, 180, 98, 0.13);
+}
+
+.rightCol {
+    flex: 1 1 320px;
+    min-width: 320px;
+    max-width: 550px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+}
+
+.productTitle {
+    font-weight: bold;
+    font-size: 2rem;
+    margin-bottom: 12px;
+}
+
+.priceRow {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    font-size: 1.22rem;
+}
+
+.percent {
+    color: #1e6b39;
+    font-weight: 700;
+    font-size: 1.11em;
+}
+
+.price {
+    font-weight: 700;
+    font-size: 1.5em;
+    letter-spacing: -1px;
+}
+
+.originalPrice {
+    color: #bbb;
+    text-decoration: line-through;
+    font-size: 1em;
+}
+
+.optionBox {
+    background: #f7f7f7;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 22px;
+    margin-bottom: 4px;
+}
+
+.qtyInputBox {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    background: #fff;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    overflow: hidden;
+}
+
+.qtyBtn {
+    width: 30px;
+    height: 30px;
+    font-size: 1.12rem;
+    background: none;
+    border: none;
+    color: #1e6b39;
+    cursor: pointer;
+    outline: none;
+    transition: background 0.1s;
+}
+
+.qtyBtn:active {
+    background: #e7f5ec;
+}
+
+.qtyInput {
+    width: 32px;
+    border: none;
+    text-align: center;
+    font-size: 1rem;
+    outline: none;
+    background: transparent;
+    color: #222;
+}
+
+.optionPrice {
+    font-weight: bold;
+    color: #1e6b39;
+    font-size: 1.09em;
+}
+
+.totalRow {
+    display: flex;
+    align-items: center;
+    font-size: 1.18rem;
+    gap: 10px;
+}
+
+.totalPrice {
+    font-weight: bold;
+    color: #1e6b39;
+    font-size: 1.25em;
+}
+
+.btnRow {
+    display: flex;
+    gap: 14px;
+}
+
+.cartBtn,
+.buyBtn {
+    flex: 1 1 0;
+    padding: 12px 0;
+    font-weight: bold;
+    font-size: 1.11rem;
+    border: 1.5px solid #1e6b39;
+    background: #fff;
+    color: #1e6b39;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+}
+
+.cartBtn:hover {
+    background: #f1fbf6;
+}
+
+.buyBtn {
+    background: #1e6b39;
+    color: #fff;
+}
+
+.buyBtn:hover {
+    background: #24934b;
+}

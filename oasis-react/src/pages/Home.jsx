@@ -62,24 +62,10 @@ export default function Home() {
     // 탭별 필터 부분
     const keys = section.buttonGroups[activeTabs[sectionIdx]].keys;
 
-    // ★ 이거 추가해서 타입과 값을 콘솔로 확인해봐
-    console.log(`[${section.title}] keys:`, keys, "(type:", typeof keys[0] + ")", "| products:", products);
-
-    return products.filter(prod => {
-      // 디버깅: 값/타입 모두 콘솔 출력
-      console.log(
-        `[${section.title}] id=${prod.id} name=${prod.name} subCategoryId=${prod.subCategoryId} (type:${typeof prod.subCategoryId})`
-      );
-
-      // (1) 일단 prod.subCategoryId, keys 모두 Number로 강제해서 비교!
-      const match = keys.map(Number).includes(Number(prod.subCategoryId));
-      if (!match) {
-        console.log(`[${section.title}] 제외됨: id=${prod.id} name=${prod.name} subCategoryId=${prod.subCategoryId} (type:${typeof prod.subCategoryId})`);
-      }
-      return match;
-    }).slice(0, 4);
-
-  };
+    return products
+    .filter(prod => keys.map(Number).includes(Number(prod.subCategoryId)))
+    .slice(0, 4);
+};
 
 
   // 이벤트 캐러셀 그룹핑
@@ -144,7 +130,7 @@ export default function Home() {
             <div className="container d-flex flex-wrap justify-content-center gap-3">
               {categories.map(cat => (
                 <motion.div whileHover={{ scale: 1.13 }} className="category-icon text-center" key={cat.id}>
-                  <Link to={`/category/${cat.id}`}>
+                  <Link to={`/products/category/${cat.id}`}>
                     <div className="rounded-circle bg-light d-flex align-items-center justify-content-center"
                       style={{ width: 80, height: 80, overflow: "hidden", margin: "0 auto" }}>
                       <img src={cat.icon} alt={cat.name} style={{ width: 80, height: 80, objectFit: "cover" }} />
@@ -191,7 +177,7 @@ export default function Home() {
                     className="col product-card"
                     key={prod.id}
                     style={{ cursor: "pointer" }}
-                    onClick={() => navigate(`/product/${prod.id}`)}
+                    onClick={() => navigate(`/products/${prod.id}`)}
                   >
                     <div className="card h-100 border-0">
                       <div className="img-wrap position-relative overflow-hidden mx-auto">

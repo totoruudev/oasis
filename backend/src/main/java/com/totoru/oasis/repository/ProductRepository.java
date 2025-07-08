@@ -1,11 +1,14 @@
 package com.totoru.oasis.repository;
 
 import com.totoru.oasis.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
@@ -18,4 +21,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     // 전체 활성 상품 최신순
     List<Product> findAllByActiveTrueOrderByCreatedAtDesc();
+
+    // 상품 자세히보기
+    Optional<Product> findByIdAndActiveTrue(Long id);
+
+    // **카테고리별 활성 상품(페이징, id 오름차순)**
+    @Query("SELECT p FROM Product p WHERE p.active = true AND p.category.id = :categoryId ORDER BY p.id ASC")
+    Page<Product> findByCategoryIdAndActiveTrue(@Param("categoryId") Long categoryId, Pageable pageable);
+
 }

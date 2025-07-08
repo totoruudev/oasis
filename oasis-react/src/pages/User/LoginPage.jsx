@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import "./LoginPage.css";
 
+axios.defaults.withCredentials = true;
+
 export default function LoginPage({ onLoginSuccess }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -11,7 +13,6 @@ export default function LoginPage({ onLoginSuccess }) {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        console.log("로그인 버튼 클릭됨", username, password); // 추가
         setError("");
         try {
             const res = await axios.post(
@@ -19,13 +20,26 @@ export default function LoginPage({ onLoginSuccess }) {
                 { username, password },
                 { withCredentials: true }
             );
-            if (onLoginSuccess) onLoginSuccess(res.data); // 성공 콜백(옵션)
-            // 보통 로그인 후 리다이렉트
+
+            localStorage.setItem("user", JSON.stringify(res.data));
+            
+
+            console.log("[프론트] 로그인 응답:", res.data);
+
+            // 👇 로그인 성공 직후 바로 유저정보 fetch!
+            fetch("/api/users/my", { credentials: "include" })
+            .then(res => res.json())
+            .then(data => {
+                console.log("[로그인 후 내 정보]", data);
+            });
+
+            if (onLoginSuccess) onLoginSuccess(res.data);
             navigate("/");
         } catch (err) {
             setError("아이디 또는 비밀번호를 다시 확인해 주세요.");
         }
     };
+
 
     return (
         <div className="container login-page">

@@ -46,11 +46,16 @@ public class UserController {
     // 로그인 (세션 + SecurityContext 동시 등록)
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credentials, HttpSession session) {
+        System.out.println("로그인 시도: " + credentials.get("username"));
+
         User user = userService.login(credentials.get("username"), credentials.get("password"));
         if (user != null) {
             // 세션에 일부 정보 저장 (선택)
             session.setAttribute("userId", user.getId());
             session.setAttribute("username", user.getUsername());
+
+            System.out.println("세션 저장 userId: " + session.getAttribute("userId"));
+            System.out.println("세션 저장 username: " + session.getAttribute("username"));
 
             // SecurityContextHolder에 인증정보 등록
             UsernamePasswordAuthenticationToken authentication =
@@ -64,6 +69,9 @@ public class UserController {
                     HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                     SecurityContextHolder.getContext()
             );
+
+            System.out.println("SecurityContextHolder: " + SecurityContextHolder.getContext().getAuthentication());
+
             // user 전체 리턴 X (보안상), 최소한의 정보만 리턴 추천
             return ResponseEntity.ok(Map.of(
                     "userId", user.getId(),
@@ -72,6 +80,7 @@ public class UserController {
                     "name", user.getName()
             ));
         } else {
+            System.out.println("로그인 실패 (아이디/비번 틀림)");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
         }
     }
@@ -88,13 +97,19 @@ public class UserController {
     @GetMapping("/my")
     public ResponseEntity<?> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("현재 인증 정보: " + authentication);
+
         if (authentication == null || !authentication.isAuthenticated()
                 || authentication.getPrincipal().equals("anonymousUser")) {
+            System.out.println("인증 안됨(로그인 필요)");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
         String username = authentication.getName();
+        System.out.println("인증된 username: " + username);
+
         User user = userRepository.findByUsername(username).orElse(null);
         if (user == null) {
+            System.out.println("DB에 사용자 없음");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인이 필요합니다.");
         }
         Map<String, Object> result = new HashMap<>();

@@ -8,7 +8,8 @@ show tables;
 -- SET role = 'ADMIN'
 -- WHERE id = 1;
 
--- select * from user;
+select * from user;
+
 
 INSERT INTO event (title, description, banner_img, link_url, start_at, end_at, sort_order, active) VALUES
 ('여름엔 밀키트가 진리', '간편하게 즐기는 미식여행', 'Carousel_item_01.jpg', '/event/detail/1', '2025-06-30', '2025-07-09', 1, true),
@@ -27,6 +28,8 @@ INSERT INTO category (name, icon) VALUES
 ('축산',   'Recommend_icon_02.jpg'),
 ('수산',   'Recommend_icon_03.jpg'),
 ('간식',   'Recommend_icon_04.jpg');
+-- UPDATE category
+-- SET icon = REPLACE(icon, '.png', '.jpg');
 
 select * from category;
 
@@ -52,6 +55,7 @@ INSERT INTO sub_category (name, category_id) VALUES
 INSERT INTO sub_category (name, category_id) VALUES
 ('과자', 4), ('빵', 4), ('떡', 4), ('한과', 4), ('엿', 4),
 ('두유', 4), ('유제품', 4), ('선식', 4), ('사탕', 4), ('젤리', 4), ('초콜릿', 4), ('시리얼', 4);
+
 
 -- 농산물: GAP
 INSERT INTO product (
@@ -137,3 +141,26 @@ INSERT INTO product (
 -- 시금치 (200g)/무농약
 (1, NOW(), '시금치 (200g)/무농약', 25, 5700, '', 'eco_spinach_200g_detail.jpg', 'eco_spinach_200g_thumb.jpg', 1, 4, 0);
 
+-- 농산물: 우리땅채소
+INSERT INTO product (
+  active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
+) VALUES
+-- 친환경 양배추
+(1, NOW(), '국내산 양배추(1통,800g-1kg)', 34, 2280, '', 'k_cabbage_800g_detail.jpg', 'k_cabbage_800g_thumb.jpg', 1, 5, 0),
+-- 무농약 꿀맛 고구마
+(1, NOW(), '무농약 꿀맛 고구마 (3kg)', 31, 17800, '', 'sweetpotato_3kg_detail.jpg', 'sweetpotato_3kg_thumb.jpg', 1, 5, 0),
+-- 국내산 두백 햇감자 (특~대, 1.7kg내외)
+(1, NOW(), '국내산 두백 햇감자 (특~대, 1.7kg내외)', 34, 6500, '', 'potato_big_17kg_detail.jpg', 'potato_big_17kg_thumb.jpg', 1, 5, 0),
+-- 저탄소 햇 홍감자 (1kg, 5~10개)
+(1, NOW(), '저탄소 햇 홍감자 (1kg, 5~10개)', 44, 4440, '', 'red_potato_1kg_detail.jpg', 'red_potato_1kg_thumb.jpg', 1, 5, 0),
+-- 친환경 양배추 (1통, 1.3kg내외/무농약이상)
+(1, NOW(), '친환경 양배추 (1통, 1.3kg내외/무농약이상)', 34, 4250, '', 'eco_cabbage_13kg_detail.jpg', 'eco_cabbage_13kg_thumb.jpg', 1, 5, 0),
+-- 국내산 감자(1kg.6~10개)
+(1, NOW(), '국내산 감자(1kg.6~10개)', 43, 3990, '', 'k_potato_1kg_detail.jpg', 'k_potato_1kg_thumb.jpg', 1, 5, 0),
+-- 저탄소 두백 햇감자 (1kg, 5~10개)
+(1, NOW(), '저탄소 두백 햇감자 (1kg, 5~10개)', 46, 3780, '', 'double_potato_1kg_detail.jpg', 'double_potato_1kg_thumb.jpg', 1, 5, 0),
+-- 국내산 양파1.5kg(6개입)
+(1, NOW(), '국내산 양파1.5kg(6개입)', 25, 3590, '', 'k_onion_15kg_detail.jpg', 'k_onion_15kg_thumb.jpg', 1, 5, 0);
+
+select * from product;
+select * from cart_item;

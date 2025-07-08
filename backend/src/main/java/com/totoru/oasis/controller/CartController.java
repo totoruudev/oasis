@@ -1,6 +1,6 @@
 package com.totoru.oasis.controller;
 
-import com.totoru.oasis.entity.CartItem;
+import com.totoru.oasis.dto.CartItemDto;
 import com.totoru.oasis.repository.CartRepository;
 import com.totoru.oasis.service.CartService;
 import jakarta.servlet.http.HttpSession;
@@ -21,36 +21,32 @@ public class CartController {
     private final CartRepository cartRepository;
 
     @PostMapping
-    public ResponseEntity<CartItem> addToCart(@RequestBody CartItem item, HttpSession session, Principal principal) {
+    public ResponseEntity<CartItemDto> addToCart(@RequestBody CartItemDto dto, HttpSession session, Principal principal) {
         String sessionId = session.getId();
-        String userId = session.getAttribute("userId") != null ? session.getAttribute("userId").toString() : null;
+        String userId = (session.getAttribute("userId") != null) ? session.getAttribute("userId").toString() : null;
 
-
-        System.out.println("받은 percent = " + item.getPercent());
-        return ResponseEntity.ok(cartService.addItem(sessionId, userId, item));
+        return ResponseEntity.ok(cartService.addItem(sessionId, userId, dto));
     }
 
     @GetMapping
-    public ResponseEntity<List<CartItem>> getCart(HttpSession session, Principal principal) {
+    public ResponseEntity<List<CartItemDto>> getCart(HttpSession session, Principal principal) {
         String sessionId = session.getId();
-        String userId = session.getAttribute("userId") != null ? session.getAttribute("userId").toString() : null;
-
+        String userId = (session.getAttribute("userId") != null) ? session.getAttribute("userId").toString() : null;
 
         return ResponseEntity.ok(cartService.getItems(sessionId, userId));
     }
 
     @PutMapping("/{productId}")
-    public ResponseEntity<CartItem> updateQuantity(
+    public ResponseEntity<CartItemDto> updateQuantity(
             @PathVariable("productId") Long productId,
-            @RequestBody CartItem item,
+            @RequestBody CartItemDto dto,
             HttpSession session,
             Principal principal
     ) {
         String sessionId = session.getId();
-        String userId = session.getAttribute("userId") != null ? session.getAttribute("userId").toString() : null;
+        String userId = (session.getAttribute("userId") != null) ? session.getAttribute("userId").toString() : null;
 
-        System.out.println("➡ userId = " + userId);
-        return ResponseEntity.ok(cartService.updateQuantity(sessionId, userId, productId, item.getQuantity()));
+        return ResponseEntity.ok(cartService.updateQuantity(sessionId, userId, productId, dto.getQuantity()));
     }
 
     @DeleteMapping("/{productId}")
@@ -60,10 +56,8 @@ public class CartController {
             Principal principal
     ) {
         String sessionId = session.getId();
-        String userId = session.getAttribute("userId") != null ? session.getAttribute("userId").toString() : null;
+        String userId = (session.getAttribute("userId") != null) ? session.getAttribute("userId").toString() : null;
 
-
-        System.out.println("🗑️ 삭제 요청 - productId: " + productId + ", sessionId: " + sessionId + ", userId: " + userId);
         cartService.removeItem(sessionId, userId, productId);
         return ResponseEntity.ok().build();
     }
@@ -74,15 +68,12 @@ public class CartController {
         Object userIdObj = session.getAttribute("userId");
 
         if (userIdObj != null) {
-            // 회원 장바구니 비우기
             String userId = String.valueOf(userIdObj);
             cartRepository.findAllByUserId(userId).forEach(cartRepository::delete);
         } else {
-            // 비회원 장바구니 비우기
             cartRepository.findAllBySessionId(sessionId).forEach(cartRepository::delete);
         }
 
         return ResponseEntity.ok().build();
     }
-
 }
