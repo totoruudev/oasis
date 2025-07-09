@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import DaumPostcode from "react-daum-postcode";
+import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 export default function CheckoutPage() {
@@ -12,6 +14,8 @@ export default function CheckoutPage() {
     const [phone, setPhone] = useState("");
     const [address, setAddress] = useState("");
     const [addressDetail, setAddressDetail] = useState("");
+    const [showAddressModal, setShowAddressModal] = useState(false);
+    const [loadingAddress, setLoadingAddress] = useState(false);
 
     // 결제수단 상태
     const [paymentMethod, setPaymentMethod] = useState("TOSS");
@@ -38,6 +42,27 @@ export default function CheckoutPage() {
         navigate("/order/complete");
     };
 
+    // const handlePayment = async (e) => {
+    //     e.preventDefault();
+
+    //     // 1. 주문 정보 서버로 전송
+    //     const prepareRes = await axios.post("/api/orders/prepare", { ... });
+
+    //     // 2. 응답값으로 Toss 결제창 호출
+    //     const { orderId, amount, orderName, customerName } = prepareRes.data;
+    //     const tossPayments = window.TossPayments(process.env.REACT_APP_TOSS_CLIENT_KEY);
+
+    //     await tossPayments.requestPayment("카드", {
+    //         amount,
+    //         orderId,
+    //         orderName,
+    //         customerName,
+    //         successUrl: `${window.location.origin}/order/success`,
+    //         failUrl: `${window.location.origin}/order/fail`
+    //     });
+    // };
+
+
     return (
         <div className="container-fluid" style={{ minHeight: "100vh", background: "#f7f7f9" }}>
             <div className="row justify-content-center">
@@ -56,11 +81,71 @@ export default function CheckoutPage() {
                                     <label className="form-label">연락처</label>
                                     <input className="form-control" required value={phone} onChange={e => setPhone(e.target.value)} />
                                 </div>
-                                <div className="col-12 mt-2">
+                                <div className="mb-3">
                                     <label className="form-label">주소</label>
-                                    <input className="form-control mb-2" placeholder="기본주소" required value={address} onChange={e => setAddress(e.target.value)} />
-                                    <input className="form-control" placeholder="상세주소(선택)" value={addressDetail} onChange={e => setAddressDetail(e.target.value)} />
+                                    <div style={{ display: "flex", gap: "8px", minHeight: 49 }}>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={address}
+                                            readOnly
+                                            placeholder="주소 찾기를 클릭하세요"
+                                            style={{ flex: 1, cursor: "pointer", background: "#fafcfa" }}
+                                            onClick={() => setShowAddressModal(true)}
+                                        />
+                                        <button
+                                            type="button"
+                                            className="btn btn-outline-success"
+                                            onClick={() => setShowAddressModal(true)}
+                                            style={{ height: 48 }}
+                                        >
+                                            주소찾기
+                                        </button>
+                                    </div>
+                                    <input
+                                        type="text"
+                                        className="form-control"
+                                        value={addressDetail}
+                                        onChange={e => setAddressDetail(e.target.value)}
+                                        placeholder="상세주소 (예: 아파트, 동/호수 등)"
+                                        style={{ marginTop: "2px" }}
+                                    />
+                                    {showAddressModal && (
+                                        <div
+                                            style={{
+                                                position: "fixed",
+                                                top: 0, left: 0, right: 0, bottom: 0,
+                                                background: "rgba(0,0,0,0.32)",
+                                                zIndex: 10000,
+                                                display: "flex", alignItems: "center", justifyContent: "center"
+                                            }}>
+                                            <div style={{
+                                                background: "#fff",
+                                                borderRadius: 10,
+                                                boxShadow: "0 4px 24px 0 rgba(0,0,0,0.10)",
+                                                padding: 16,
+                                                width: "95vw",
+                                                maxWidth: 620,
+                                            }}>
+                                                <DaumPostcode
+                                                    onComplete={data => {
+                                                        setAddress(data.address); // 선택한 주소
+                                                        setShowAddressModal(false); // 모달 닫기
+                                                    }}
+                                                    autoClose
+                                                />
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-light mt-2"
+                                                    style={{ float: "right" }}
+                                                    onClick={() => setShowAddressModal(false)}
+                                                >닫기</button>
+                                            </div>
+                                        </div>
+                                    )}
+
                                 </div>
+
                             </div>
                         </div>
                         {/* 2. 주문 상품정보 */}
