@@ -4,7 +4,8 @@ import com.totoru.oasis.service.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,8 +13,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -29,31 +32,31 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                // CORS (React 연동시 기본 허용)
-                .cors(Customizer.withDefaults())
+                // ✅ CORS 설정을 CorsConfigurationSource Bean을 사용하도록 수정
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                // CSRF(REST API, 세션기반이면 disable 추천)
+                // CSRF 비활성화
                 .csrf(csrf -> csrf.disable())
 
-                // 세션 정책: 세션(STATELESS X, 즉 기본값 유지)
+                // 세션 정책: IF_REQUIRED
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(
-                                // STATELESS 아니고 기본값(=IF_REQUIRED)로 하면 세션 유지
-                                org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED
-                        )
+                        .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED)
                 )
 
                 // 권한 설정
                 .authorizeHttpRequests(auth -> auth
-                        // [정적 리소스]
                         .requestMatchers(
                                 "/", "/index.html",
                                 "/images/**", "/data/**", "/uploads/**",
                                 "/static/**", "/css/**", "/js/**"
                         ).permitAll()
-                        // [회원가입, 로그인, 상품조회 등 비회원 허용]
                         .requestMatchers(
                                 "/api/users/join", "/api/users/login", "/api/users/check-*", "/api/users/check/*", "/api/users/check*",
                                 "/api/email/send", "/api/email/verify",
@@ -63,28 +66,28 @@ public class SecurityConfig {
                                 "/api/products/subcategory", "/api/products/subcategory/{id}",
                                 "/api/categories/**", "/api/notices/**"
                         ).permitAll()
-                        // [그 외 모든 요청은 인증 필요]
                         .anyRequest().authenticated()
                 )
 
-                // 폼 로그인/로그아웃은 REST API에서 직접 구현하므로 비활성화
+                // 폼 로그인/로그아웃 비활성화
                 .formLogin(form -> form.disable())
-                .logout(logout -> logout.disable())
-        ;
+                .logout(logout -> logout.disable());
 
         return http.build();
     }
 
+    // CorsFilter Bean 대신 CorsConfigurationSource Bean을 등록
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true); // 쿠키/세션 허용
-        config.addAllowedOrigin("http://localhost:3000"); // 프론트 주소만 명확히
-        config.addAllowedHeader("*");
-        config.addAllowedMethod("*");
+        config.setAllowCredentials(true);
+        config.setAllowedOrigins(List.of("http://localhost:3000")); // List.of() 사용 권장
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+        return source;
     }
+
 }
