@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styles from './ProductDetail.module.css';
 import axios from "axios";
+
 
 
 function getProductImageUrl(path) {
@@ -16,6 +17,7 @@ export default function ProductDetail() {
     const [qty, setQty] = useState(1);
     const [mainIdx, setMainIdx] = useState(0); // 현재 메인 이미지 인덱스
     const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
 
     useEffect(() => {
         async function fetchProduct() {
@@ -68,6 +70,21 @@ export default function ProductDetail() {
         } catch (err) {
             alert("장바구니 담기 실패");
         }
+    };
+
+    const handleDirectBuy = () => {
+        // 현재 상품 + 수량을 객체로 만들어 배열에 넣어서 state로 전달
+        navigate("/order/checkout", { 
+            state: { 
+                items: [{ 
+                    id: product.id,
+                    name: product.name,
+                    price: salePrice, // 할인 적용가로!
+                    qty: qty,
+                    thumbnailimg: product.thumbnailimg 
+                }]
+            }
+        });
     };
 
     return (
@@ -128,7 +145,7 @@ export default function ProductDetail() {
                     {/* 버튼 */}
                     <div className={styles.btnRow}>
                         <button className={styles.cartBtn} onClick={handleAddToCart}>장바구니</button>
-                        <button className={styles.buyBtn}>구매하기</button>
+                        <button className={styles.buyBtn} onClick={handleDirectBuy}>구매하기</button>
                     </div>
                 </div>
             </div>

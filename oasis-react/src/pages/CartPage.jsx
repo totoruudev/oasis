@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-
-// 부트스트랩
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function getProductImageUrl(path) {
@@ -69,7 +67,18 @@ export default function CartPage() {
     const getSum = () =>
         cartItems.reduce((sum, item) => sum + (item.price * item.quantity * (100 - (item.percent || 0)) / 100), 0);
 
-    if (loading) return <div className="text-center py-5">장바구니 불러오는 중...</div>;
+    // ✅ 주문하기 버튼: 구조 맞춰서 넘기기
+    const handleCheckout = () => {
+        const checkoutItems = cartItems.map(item => ({
+            id: item.productId,
+            name: item.productName,
+            price: item.price,
+            percent: item.percent,
+            qty: item.quantity,
+            thumbnailimg: item.thumbnailimg
+        }));
+        navigate("/order/checkout", { state: { items: checkoutItems } });
+    };
 
     return (
         <div className="container py-4" style={{ maxWidth: 600 }}>
@@ -81,11 +90,11 @@ export default function CartPage() {
                     <table className="table align-middle mb-3">
                         <thead className="table-light">
                             <tr>
-                                <th style={{width: 80}}>이미지</th>
+                                <th style={{ width: 80 }}>이미지</th>
                                 <th>상품명</th>
-                                <th style={{width: 90}}>수량</th>
-                                <th style={{width: 90}}>금액</th>
-                                <th style={{width: 60}}></th>
+                                <th style={{ width: 90 }}>수량</th>
+                                <th style={{ width: 90 }}>금액</th>
+                                <th style={{ width: 60 }}></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -95,7 +104,7 @@ export default function CartPage() {
                                         <img src={getProductImageUrl(item.thumbnailimg)}
                                             alt={item.productName}
                                             className="rounded"
-                                            style={{width: 56, height: 56, objectFit: "cover"}}
+                                            style={{ width: 56, height: 56, objectFit: "cover" }}
                                         />
                                     </td>
                                     <td>
@@ -110,14 +119,14 @@ export default function CartPage() {
                                         <div className="d-flex align-items-center">
                                             <button className="btn btn-outline-secondary btn-sm me-1"
                                                 onClick={() => handleQtyChange(item.productId, item.quantity - 1)}>-</button>
-                                            <span style={{width: 24, display:"inline-block", textAlign:"center"}}>{item.quantity}</span>
+                                            <span style={{ width: 24, display: "inline-block", textAlign: "center" }}>{item.quantity}</span>
                                             <button className="btn btn-outline-secondary btn-sm ms-1"
                                                 onClick={() => handleQtyChange(item.productId, item.quantity + 1)}>+</button>
                                         </div>
                                     </td>
                                     <td>
                                         <span>
-                                            <del className="text-muted small">{item.percent > 0 ? (item.price * item.quantity).toLocaleString() + "원" : ""}</del><br/>
+                                            <del className="text-muted small">{item.percent > 0 ? (item.price * item.quantity).toLocaleString() + "원" : ""}</del><br />
                                             <span className="fw-bold text-success">{Math.floor(item.price * item.quantity * (100 - (item.percent || 0)) / 100).toLocaleString()}원</span>
                                         </span>
                                     </td>
@@ -134,7 +143,10 @@ export default function CartPage() {
                         <span className="fw-bold fs-5">합계: <span className="text-success">{Math.floor(getSum()).toLocaleString()}원</span></span>
                     </div>
                     <div className="d-grid gap-2">
-                        <button className="btn btn-success btn-lg mb-2" onClick={()=>navigate('/order')}>주문하기</button>
+                        {/* 주문하기 버튼 */}
+                        <button className="btn btn-success btn-lg mb-2" onClick={handleCheckout}>
+                            주문하기
+                        </button>
                         <Link to="/products" className="btn btn-outline-primary btn-lg">쇼핑 계속하기</Link>
                     </div>
                 </div>
