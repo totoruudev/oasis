@@ -67,7 +67,6 @@ export default function CartPage() {
     const getSum = () =>
         cartItems.reduce((sum, item) => sum + (item.price * item.quantity * (100 - (item.percent || 0)) / 100), 0);
 
-    // ✅ 주문하기 버튼: 구조 맞춰서 넘기기
     const handleCheckout = () => {
         const checkoutItems = cartItems.map(item => ({
             id: item.productId,

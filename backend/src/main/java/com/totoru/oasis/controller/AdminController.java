@@ -129,6 +129,17 @@ public class AdminController {
                 });
     }
 
+    @PatchMapping("/orders/{orderId}/status")
+    public ResponseEntity<?> updateOrderStatusByAdmin(
+            @PathVariable Long orderId,
+            @RequestBody Map<String, String> body
+    ) {
+        String status = body.get("status");
+        orderService.updateOrderStatus(orderId, status);
+        return ResponseEntity.ok("상태 변경 완료");
+    }
+
+
 
     // ✅ 상품 전체 목록
     @GetMapping("/products")
@@ -171,8 +182,5 @@ public class AdminController {
         userRepository.deleteById(id);
         return ResponseEntity.ok("삭제 완료");
     }
-
-
-
 
 }
