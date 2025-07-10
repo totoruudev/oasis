@@ -37,30 +37,56 @@ export default function CheckoutPage() {
             alert("아직 지원되지 않는 결제수단입니다.");
             return;
         }
-        // 결제 로직 연결
         alert("토스 결제 진행!");
         navigate("/order/complete");
     };
 
-    // const handlePayment = async (e) => {
-    //     e.preventDefault();
+    const handleLoadMyAddress = async () => {
+    setLoadingAddress(true);
+        try {
+        const res = await axios.get("/api/users/my", { withCredentials: true });
+        const { name, tel, address, addressDetail } = res.data;
+        if (name) setReceiver(name);
+        if (tel) setPhone(tel);
+        if (address) setAddress(address);
+        if (addressDetail) setAddressDetail(addressDetail);
+        } catch (err) {
+        alert("내 정보를 불러올 수 없습니다.");
+        }
+        setLoadingAddress(false);
+    };
 
-    //     // 1. 주문 정보 서버로 전송
-    //     const prepareRes = await axios.post("/api/orders/prepare", { ... });
+    const handlePayment = async (e) => {
+        e.preventDefault();
 
-    //     // 2. 응답값으로 Toss 결제창 호출
-    //     const { orderId, amount, orderName, customerName } = prepareRes.data;
-    //     const tossPayments = window.TossPayments(process.env.REACT_APP_TOSS_CLIENT_KEY);
+        // 1. 주문 정보 서버로 전송
+        const prepareRes = await axios.post("/api/orders/prepare", { 
+            name: receiver,
+            phone,
+            address: address + " " + addressDetail,
+            items: items.map(item => ({
+                productId: item.id,
+                productName: item.name,
+                price: item.price,
+                percent: item.percent || 0,
+                quantity: item.qty,
+                thumbnailimg: item.thumbnailimg
+            }))
+        }, { withCredentials: true });
 
-    //     await tossPayments.requestPayment("카드", {
-    //         amount,
-    //         orderId,
-    //         orderName,
-    //         customerName,
-    //         successUrl: `${window.location.origin}/order/success`,
-    //         failUrl: `${window.location.origin}/order/fail`
-    //     });
-    // };
+        // 2. 응답값으로 Toss 결제창 호출
+        const { orderId, amount, orderName, customerName } = prepareRes.data;
+        const tossPayments = window.TossPayments(process.env.REACT_APP_TOSS_CLIENT_KEY);
+
+        await tossPayments.requestPayment("카드", {
+            amount,
+            orderId,
+            orderName,
+            customerName,
+            successUrl: `${window.location.origin}/order/success`,
+            failUrl: `${window.location.origin}/order/fail`
+        });
+    };
 
 
     return (
@@ -101,6 +127,13 @@ export default function CheckoutPage() {
                                         >
                                             주소찾기
                                         </button>
+                                        <button type="button"
+                                            className="btn btn-outline-info"
+                                            onClick={handleLoadMyAddress}
+                                            disabled={loadingAddress}
+                                        >
+                                            {loadingAddress ? "불러오는 중..." : "내 주소 불러오기"}
+                                        </button>
                                     </div>
                                     <input
                                         type="text"
@@ -129,8 +162,8 @@ export default function CheckoutPage() {
                                             }}>
                                                 <DaumPostcode
                                                     onComplete={data => {
-                                                        setAddress(data.address); // 선택한 주소
-                                                        setShowAddressModal(false); // 모달 닫기
+                                                        setAddress(data.address);
+                                                        setShowAddressModal(false);
                                                     }}
                                                     autoClose
                                                 />
@@ -143,9 +176,7 @@ export default function CheckoutPage() {
                                             </div>
                                         </div>
                                     )}
-
                                 </div>
-
                             </div>
                         </div>
                         {/* 2. 주문 상품정보 */}
@@ -229,7 +260,7 @@ export default function CheckoutPage() {
                         <button
                             className="btn btn-success w-100 fw-bold py-3 rounded-4"
                             style={{ fontSize: "1.2rem" }}
-                            onClick={handleSubmit}
+                            onClick={handlePayment}
                             type="button"
                         >
                             결제하기

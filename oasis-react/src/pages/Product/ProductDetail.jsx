@@ -18,6 +18,7 @@ export default function ProductDetail() {
     const [mainIdx, setMainIdx] = useState(0); // 현재 메인 이미지 인덱스
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+    const [showCartModal, setShowCartModal] = useState(false);
 
     useEffect(() => {
         async function fetchProduct() {
@@ -65,8 +66,7 @@ export default function ProductDetail() {
                 thumbnailimg: product.thumbnailimg
             }, { withCredentials: true });
 
-            alert("장바구니에 담겼습니다!");
-            // 필요시 navigate("/cart"); 등 이동도 가능
+            setShowCartModal(true);
         } catch (err) {
             alert("장바구니 담기 실패");
         }
@@ -145,6 +145,28 @@ export default function ProductDetail() {
                     {/* 버튼 */}
                     <div className={styles.btnRow}>
                         <button className={styles.cartBtn} onClick={handleAddToCart}>장바구니</button>
+                        {showCartModal && (
+                            <div className="modal fade show d-block" tabIndex="-1" style={{ background: "rgba(0,0,0,0.3)" }}>
+                                <div className="modal-dialog modal-dialog-centered">
+                                    <div className="modal-content">
+                                        <div className="modal-header">
+                                            <h5 className="modal-title">장바구니 담기 완료</h5>
+                                        </div>
+                                        <div className="modal-body text-center">
+                                            <p>상품이 장바구니에 담겼습니다.</p>
+                                        </div>
+                                        <div className="modal-footer justify-content-center">
+                                            <button className="btn btn-outline-primary"
+                                                onClick={() => { setShowCartModal(false); navigate("/cart"); }}>장바구니 보기</button>
+                                            <button className="btn btn-success"
+                                                onClick={() => { setShowCartModal(false); handleDirectBuy(); }}>바로 결제하기</button>
+                                            <button className="btn btn-secondary"
+                                                onClick={() => setShowCartModal(false)}>쇼핑 계속하기</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                         <button className={styles.buyBtn} onClick={handleDirectBuy}>구매하기</button>
                     </div>
                 </div>

@@ -5,7 +5,7 @@ import "./LoginPage.css";
 
 axios.defaults.withCredentials = true;
 
-export default function LoginPage({ onLoginSuccess }) {
+export default function LoginPage({ onLogin }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
@@ -23,9 +23,6 @@ export default function LoginPage({ onLoginSuccess }) {
 
             localStorage.setItem("user", JSON.stringify(res.data));
             
-
-            console.log("[프론트] 로그인 응답:", res.data);
-
             // 👇 로그인 성공 직후 바로 유저정보 fetch!
             fetch("/api/users/my", { credentials: "include" })
             .then(res => res.json())
@@ -33,8 +30,9 @@ export default function LoginPage({ onLoginSuccess }) {
                 console.log("[로그인 후 내 정보]", data);
             });
 
-            if (onLoginSuccess) onLoginSuccess(res.data);
-            navigate("/");
+            if (onLogin) onLogin(res.data);
+            navigate("/", { replace: true });
+
         } catch (err) {
             setError("아이디 또는 비밀번호를 다시 확인해 주세요.");
         }

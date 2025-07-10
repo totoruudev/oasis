@@ -158,6 +158,13 @@ public class OrderService {
                 ));
     }
 
+    @Transactional
+    public void updateOrderStatus(Long orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 주문이 존재하지 않습니다. id=" + orderId));
+        order.setStatus(status);
+        orderRepository.save(order); // 실무에선 영속성 컨텍스트 때문에 save 생략해도 되지만, 확실하게 하려면 넣기
+    }
 
 }
 

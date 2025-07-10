@@ -65,6 +65,13 @@ public class OrderController {
     // 2️⃣ 결제 확인
     @PostMapping("/confirm")
     public ResponseEntity<?> confirmOrder(@RequestBody TossConfirmRequest request, HttpSession session) {
+
+        Optional<Order> orderOpt = orderRepository.findWithItemsByOrderId(request.getOrderId());
+        if (orderOpt.isPresent()) {
+            OrderDetailResponse dto = orderService.toOrderDetailResponse(orderOpt.get());
+            return ResponseEntity.ok(dto);
+        }
+
         try {
             ResponseEntity<String> tossResponse = tossPaymentClient.confirmPayment(
                     request.getPaymentKey(), request.getOrderId(), request.getAmount());
@@ -151,6 +158,7 @@ public class OrderController {
 
         return ResponseEntity.ok(orders);
     }
+
 
     // 5️⃣ 관리자: ID로 주문 조회
     @GetMapping("/admin/{id}")

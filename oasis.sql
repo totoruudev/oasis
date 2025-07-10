@@ -3,13 +3,14 @@
 use oasis;
 show tables;
 
--- select * from event;
--- UPDATE user
--- SET role = 'ADMIN'
--- WHERE id = 1;
+insert into user (id, address, created_at, email, name, password, profile_img, role, social, tel, username) values
+(1, 'admin_adress', NOW(), 'admin_email', '관리자', 1234, '', 'ADMIN', 0, '', 'admin');
+
+UPDATE user
+SET password = '$2a$12$PWrupq1D6MV03/2gGFbXhOWMh7YzGgfvkfRMh5B5XwZUrdRUIN3ti'
+WHERE id = 1;
 
 select * from user;
-
 
 INSERT INTO event (title, description, banner_img, link_url, start_at, end_at, sort_order, active) VALUES
 ('여름엔 밀키트가 진리', '간편하게 즐기는 미식여행', 'Carousel_item_01.jpg', '/event/detail/1', '2025-06-30', '2025-07-09', 1, true),
@@ -21,6 +22,7 @@ INSERT INTO event (title, description, banner_img, link_url, start_at, end_at, s
 ('삼성카드로 결제하면 최대 2,000원 즉시 할인!', '', 'Carousel_item_07.jpg', '/event/detail/7', '2025-07-01', '2025-07-15', 7, true),
 ('[아임닭 여름 식단 기획전 2탄] 천원대로 즐기는 여름맞이 가벼운 한끼', '고물가시대, 살도 빼고 식비도 줄여요', 'Carousel_item_08.jpg', '/event/detail/8', '2025-06-18', '2025-07-18', 8, true),
 ('[전북특별자치도 중소기업 상생 특가대전] 맛의 고향, 전북으로 떠나는 여름 맛캉스', '지역 농가가 선사하는 건강한 여름의 맛', 'Carousel_item_09.jpg', '/event/detail/9', '2025-06-15', '2025-07-14', 9, true);
+select * from event;
 
 -- 카테고리
 INSERT INTO category (name, icon) VALUES
@@ -164,3 +166,4 @@ INSERT INTO product (
 
 select * from product;
 select * from cart_item;
+select * from orders;
