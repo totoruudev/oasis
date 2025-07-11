@@ -35,27 +35,11 @@ public class User {
     @Builder.Default
     private boolean social = false;
 
-    @OneToMany(mappedBy = "questionUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JsonIgnore // 순환 참조 방지
-    private List<Qna> questions;
-
-    @OneToMany(mappedBy = "answerAdmin")
-    @JsonIgnore // 순환 참조 방지
-    private List<Qna> answers;
-
     @Column(nullable = false)
     @Builder.Default
     private String role = "USER"; // 기본값
 
     private LocalDateTime createdAt;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "user1", cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<ChatRoom> chatRoomsAsUser1;
-
-    @JsonIgnore
-    @OneToMany(mappedBy = "user2", cascade = CascadeType.REMOVE, orphanRemoval = true) // If you have a user2_id
-    private Set<ChatRoom> chatRoomsAsUser2;
 
     @PrePersist
     public void onPrePersist() {

@@ -64,7 +64,8 @@ public class SecurityConfig {
                                 "/api/products/sections",
                                 "/api/products/{id}", "/api/products/category/{categoryId}",
                                 "/api/products/subcategory", "/api/products/subcategory/{id}",
-                                "/api/categories/**", "/api/notices/**"
+                                "/api/categories/**",
+                                "/api/chat"
                         ).permitAll()
 
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")

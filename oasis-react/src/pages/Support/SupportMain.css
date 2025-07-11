@@ -1,0 +1,99 @@
+/* 전체 배경에 은은한 느낌 */
+.support-main-bg {
+    background: linear-gradient(120deg, #e9f3fb 0%, #fff 100%);
+    min-height: 100dvh;
+}
+
+.support-card-btn {
+    background: none;
+    border: none;
+    width: 100%;
+    padding: 0;
+    transition: box-shadow 0.15s;
+}
+
+/* 카드 자체 스타일 */
+.support-card {
+    border-radius: 1.5rem;
+    background: #fff;
+    box-shadow: 0 2px 24px rgba(0, 0, 0, 0.08), 0 1.5px 0 #f0f4f8;
+    padding: 2.5rem 1.5rem 2rem 1.5rem;
+    min-height: 50vh;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s, border 0.2s;
+    border: 3px solid transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+}
+
+.support-card:hover {
+    transform: translateY(-8px) scale(1.03);
+    box-shadow: 0 10px 32px rgba(50, 100, 200, 0.10);
+    border-color: #cbe8ff;
+    z-index: 2;
+}
+
+.support-card-icon-wrap {
+    margin-bottom: 20px;
+}
+
+.support-card-icon {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(50, 100, 200, 0.04));
+}
+
+/* 타이틀과 설명 */
+.support-card-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #263547;
+    margin-bottom: 0.6rem;
+}
+
+.support-card-desc {
+    font-size: 1rem;
+    color: #73808c;
+    margin-bottom: 2rem;
+    min-height: 40px;
+}
+
+/* 라벨 버튼 느낌 */
+.support-card-label {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 999px;
+    font-weight: 500;
+    font-size: 1.06rem;
+    padding: 0.52rem 1.6rem;
+    border: none;
+    box-shadow: 0 1.5px 10px rgba(0, 0, 0, 0.03);
+}
+
+.support-card-label.notice {
+    background: #e4f0ff;
+    color: #156fdc;
+}
+
+.support-card-label.faq {
+    background: #fffbe6;
+    color: #ffb700;
+}
+
+.support-card-label.ai {
+    background: #eafbee;
+    color: #19bb5e;
+}
+
+/* 모바일에서 카드간 간격 */
+@media (max-width: 767px) {
+    .support-card {
+        min-height: 300px;
+        margin-bottom: 12px;
+    }
+}

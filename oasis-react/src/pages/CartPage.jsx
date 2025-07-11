@@ -5,8 +5,8 @@ import "bootstrap/dist/css/bootstrap.min.css";
 
 function getProductImageUrl(path) {
     if (!path) return "/default_thumb.jpg";
-    if (path.startsWith("/")) return `http://localhost:8094${path}`;
-    return `http://localhost:8094/images/products/${path}`;
+    if (path.startsWith("/")) return `http://localhost:8095${path}`;
+    return `http://localhost:8095/images/products/${path}`;
 }
 
 export default function CartPage() {
@@ -82,7 +82,13 @@ export default function CartPage() {
     return (
         <div className="container py-4" style={{ maxWidth: 600 }}>
             <h2 className="mb-4 fw-bold text-center">장바구니</h2>
-            {cartItems.length === 0 ? (
+            {loading ? (
+                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: 220 }}>
+                    <div className="spinner-border text-success" role="status">
+                        <span className="visually-hidden">로딩중...</span>
+                    </div>
+                </div>
+            ) : cartItems.length === 0 ? (
                 <div className="alert alert-info text-center">장바구니에 담긴 상품이 없습니다.</div>
             ) : (
                 <div>

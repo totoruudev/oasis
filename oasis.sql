@@ -164,6 +164,81 @@ INSERT INTO product (
 -- 국내산 양파1.5kg(6개입)
 (1, NOW(), '국내산 양파1.5kg(6개입)', 25, 3590, '', 'k_onion_15kg_detail.jpg', 'k_onion_15kg_thumb.jpg', 1, 5, 0);
 
+-- 농산물: 샐러드채소
+INSERT INTO product (
+  active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
+) VALUES
+-- 멕시칸 치킨 샐러드
+(1, NOW(), '멕시칸 치킨 샐러드 (210g/225kcal)', 14, 5980, '', 'mexican_chicken_salad_detail.jpg', 'mexican_chicken_salad_thumb.jpg', 1, 6, 0),
+-- 유기농 유러피안 채소 모듬
+(1, NOW(), '유기농 유러피안 채소 모듬 (4종, 1kg 내외)', 51, 12500, '', 'organic_european_mix_detail.jpg', 'organic_european_mix_thumb.jpg', 1, 6, 0),
+-- 고소한 리코타 치즈와 시금치 페스토 샐러드
+(1, NOW(), '고소한 리코타 치즈와 시금치 페스토 샐러드 (185g/240kcal)', 10, 6550, '', 'ricotta_spinach_pesto_detail.jpg', 'ricotta_spinach_pesto_thumb.jpg', 1, 6, 0),
+-- 저스트그린 유러피안 샐러드 루꼴라 믹스
+(1, NOW(), '[저스트그린] 유러피안 샐러드 루꼴라 믹스(200g)', 31, 5450, '', 'justgreen_rucola_mix_detail.jpg', 'justgreen_rucola_mix_thumb.jpg', 1, 6, 0),
+-- 허니머스타드 케이준 샐러드랩
+(1, NOW(), '허니머스타드 케이준 샐러드랩 (165g/355kcal)', 13, 5200, '', 'honey_cajun_saladwrap_detail.jpg', 'honey_cajun_saladwrap_thumb.jpg', 1, 6, 0),
+-- 행사 GAP 파프리카 3-4입
+(1, NOW(), '[행사] GAP 파프리카 3-4입 (특/혼합/550g이상)', 33, 3980, '', 'gap_paprika_mix_detail.jpg', 'gap_paprika_mix_thumb.jpg', 1, 6, 0),
+-- 파프리카 혼합믹스 샐러드
+(1, NOW(), '파프리카 혼합믹스 샐러드 (200g)', 42, 3150, '', 'paprika_mix_salad_detail.jpg', 'paprika_mix_salad_thumb.jpg', 1, 6, 0),
+-- 어린잎&캐비지 실속샐러드
+(1, NOW(), '어린잎&캐비지 실속샐러드 (200g)', 42, 3150, '', 'youngleaf_cabbage_salad_detail.jpg', 'youngleaf_cabbage_salad_thumb.jpg', 1, 6, 0);
+
+-- 농산물: 즙용/간편채소
+INSERT INTO product (
+  active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
+) VALUES
+(1, NOW(), '[신규]즙용 당근(1kg)/무농약', 28, 3990, '', 'juice_carrot_1kg_detail.jpg', 'juice_carrot_1kg_thumb.jpg', 1, 7, 0),
+(1, NOW(), '국내산 햇양파 (1kg 내외)', 40, 2350, '', 'fresh_onion_1kg_detail.jpg', 'fresh_onion_1kg_thumb.jpg', 1, 7, 0),
+(1, NOW(), '국내산 당근(2-3입/500g내외)', 43, 1750, '', 'domestic_carrot_500g_detail.jpg', 'domestic_carrot_500g_thumb.jpg', 1, 7, 0),
+(1, NOW(), '양배추 (1통, 1.1kg 내외)/무농약', 27, 2900, '', 'cabbage_1.1kg_detail.jpg', 'cabbage_1.1kg_thumb.jpg', 1, 7, 0),
+(1, NOW(), '당근 (500g,특등품)/무농약', 31, 2760, '', 'carrot_500g_detail.jpg', 'carrot_500g_thumb.jpg', 1, 7, 0),
+(1, NOW(), '올케어 흑마늘 마늘의 왕 (70mlX30포)', 28, 34500, '', 'allcare_blackgarlic_30p_detail.jpg', 'allcare_blackgarlic_30p_thumb.jpg', 1, 7, 0),
+(1, NOW(), '친환경 이탈리안 믹스샐러드(80g)', 30, 2160, '', 'eco_italian_mixsalad_80g_detail.jpg', 'eco_italian_mixsalad_80g_thumb.jpg', 1, 8, 0),
+(1, NOW(), '[특가]GAP 쌈케일 (100g)', 23, 1300, '', 'gap_ssamkale_100g_detail.jpg', 'gap_ssamkale_100g_thumb.jpg', 1, 8, 0);
+
+
+-- 농산물: 버섯/건나물
+INSERT INTO product (
+  active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
+) VALUES
+(1, NOW(), '무농약 화고버섯(200g)', 21, 9300, '', 'pesticidefree_shiitake_200g_detail.jpg', 'pesticidefree_shiitake_200g_thumb.jpg', 1, 9, 0),
+(1, NOW(), '[특가] 국산 건도라지 (50g)', 32, 6900, '', 'k_dried_ballonflower_50g_detail.jpg', 'k_dried_ballonflower_50g_thumb.jpg', 1, 10, 0),
+(1, NOW(), '[특가] 국산 데친 두릅순 (200g, 음나무순)', 34, 6500, '', 'k_boiled_araliasprout_200g_detail.jpg', 'k_boiled_araliasprout_200g_thumb.jpg', 1, 10, 0),
+(1, NOW(), '[특가] 국산 데친 곤드레 (250g)', 41, 4300, '', 'k_boiled_thistle_250g_detail.jpg', 'k_boiled_thistle_250g_thumb.jpg', 1, 10, 0),
+(1, NOW(), '[특가] 국산 데친 취나물 (250g)', 26, 3980, '', 'k_boiled_auntyleaf_250g_detail.jpg', 'k_boiled_auntyleaf_250g_thumb.jpg', 1, 10, 0),
+(1, NOW(), '[특가] 국산 데친 비름나물 (250g)', 26, 3400, '', 'k_boiled_amaranth_250g_detail.jpg', 'k_boiled_amaranth_250g_thumb.jpg', 1, 10, 0),
+(1, NOW(), '[특가] 국산 데친 무시래기 (250g)', 32, 2600, '', 'k_boiled_radishleaf_250g_detail.jpg', 'k_boiled_radishleaf_250g_thumb.jpg', 1, 10, 0),
+(1, NOW(), '[특가] 국산 고춧잎 (150g)', 30, 2300, '', 'k_pepperleaf_150g_detail.jpg', 'k_pepperleaf_150g_thumb.jpg', 1, 10, 0);
+
+-- 농산물: 쌀/잡곡
+INSERT INTO product (
+  active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
+) VALUES
+(1, NOW(), '용추 유기농 백미 (10kg 단일품종)', 33, 46500, '', 'yongchu_organic_white_10kg_detail.jpg', 'yongchu_organic_white_10kg_thumb.jpg', 1, 11, 0),
+(1, NOW(), '월향미 국내산 미호 품종/특등급 10kg', 17, 42100, '', 'wolhyangmi_miho_10kg_detail.jpg', 'wolhyangmi_miho_10kg_thumb.jpg', 1, 11, 0),
+(1, NOW(), '용추 유기농 백미 (8kg, 단일품종)', 32, 37500, '', 'yongchu_organic_white_8kg_detail.jpg', 'yongchu_organic_white_8kg_thumb.jpg', 1, 11, 0),
+(1, NOW(), '용추 유기농 오분도미 (4kg, 단일품종)', 22, 22900, '', 'yongchu_organic_obundomi_4kg_detail.jpg', 'yongchu_organic_obundomi_4kg_thumb.jpg', 1, 11, 0),
+(1, NOW(), '월향미 국내산 미호 품종/특등급 소포장 5kg(500gx10개입)', 25, 22500, '', 'wolhyangmi_miho_5kg_detail.jpg', 'wolhyangmi_miho_5kg_thumb.jpg', 1, 11, 0),
+(1, NOW(), '용추 유기농 현미 (4kg, 단일품종)', 28, 21000, '', 'yongchu_organic_brown_4kg_detail.jpg', 'yongchu_organic_brown_4kg_thumb.jpg', 1, 11, 0),
+(1, NOW(), '제주밭벼 산듸 미호 단일품종 (4kg 소포장/상 등급)', 12, 21900, '', 'jejubatbyeo_miho_4kg_detail.jpg', 'jejubatbyeo_miho_4kg_thumb.jpg', 1, 11, 0),
+(1, NOW(), '[특가] 웰콩 서리태볶음(17gX20개입)', 38, 11900, '', 'wellkong_blackbean_snack_detail.jpg', 'wellkong_blackbean_snack_thumb.jpg', 1, 12, 0);
+
+-- 농산물: 견과/선식
+INSERT INTO product (
+  active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
+) VALUES
+(1, NOW(), '국내산 볶음 알땅콩 (500g)', 30, 18900, '', 'k_roasted_peanut_500g_detail.jpg', 'k_roasted_peanut_500g_thumb.jpg', 1, 13, 0),
+(1, NOW(), '무농약 볶은땅콩(200g)', 23, 9900, '', 'pesticidefree_roasted_peanut_200g_detail.jpg', 'pesticidefree_roasted_peanut_200g_thumb.jpg', 1, 13, 0),
+(1, NOW(), '무농약 생땅콩(200g)', 25, 9600, '', 'pesticidefree_raw_peanut_200g_detail.jpg', 'pesticidefree_raw_peanut_200g_thumb.jpg', 1, 13, 0),
+(1, NOW(), '인쉘 마카다미아(310g)', 25, 8900, '', 'inshell_macadamia_310g_detail.jpg', 'inshell_macadamia_310g_thumb.jpg', 1, 13, 0),
+(1, NOW(), '유가원 호두강정 (120g)', 6, 12000, '', 'yugawon_walnut_gangjeong_120g_detail.jpg', 'yugawon_walnut_gangjeong_120g_thumb.jpg', 1, 13, 0),
+(1, NOW(), '달콤바삭 호두정과 (140g)', 21, 5900, '', 'crispy_sweet_walnut_140g_detail.jpg', 'crispy_sweet_walnut_140g_thumb.jpg', 1, 13, 0),
+(1, NOW(), '크리스피코코넛(300g)', 12, 13000, '', 'crispy_coconut_300g_detail.jpg', 'crispy_coconut_300g_thumb.jpg', 1, 13, 0),
+(1, NOW(), '웰콩 서리태볶음가루(500g)', 25, 16500, '', 'wellkong_blackbean_powder_500g_detail.jpg', 'wellkong_blackbean_powder_500g_thumb.jpg', 1, 14, 0);
+
+select * from sub_category;
 select * from product;
 select * from cart_item;
 select * from orders;

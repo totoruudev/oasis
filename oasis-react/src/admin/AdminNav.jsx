@@ -25,16 +25,6 @@ export default function AdminNav() {
                         회원관리
                     </Link>
                 </li>
-                <li>
-                    <Link className="nav-link text-dark" to="/admin/reviews">
-                        리뷰관리
-                    </Link>
-                </li>
-                <li>
-                    <Link className="nav-link text-dark" to="/admin/qnas">
-                        Q&amp;A관리
-                    </Link>
-                </li>
             </ul>
         </nav>
     );
