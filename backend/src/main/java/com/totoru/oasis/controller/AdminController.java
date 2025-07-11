@@ -1,20 +1,28 @@
 package com.totoru.oasis.controller;
 
 import com.totoru.oasis.dto.OrderResponse;
+import com.totoru.oasis.dto.ProductDto;
 import com.totoru.oasis.entity.*;
 import com.totoru.oasis.repository.*;
+import com.totoru.oasis.service.ImageService;
 import com.totoru.oasis.service.OrderService;
+import com.totoru.oasis.service.ProductService;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,10 +36,9 @@ public class AdminController {
 
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
+    private final ProductService productService;
     private final OrderRepository orderRepository;
-    private final QnaRepository qnaRepository;
     private final OrderService orderService;
-    private final ReviewRepository reviewRepository;
 
     public record AdminReviewDto(
             Long id,
@@ -51,18 +58,7 @@ public class AdminController {
         summary.put("userCount", userRepository.count());
         summary.put("productCount", productRepository.count());
         summary.put("orderCount", orderRepository.count());
-        summary.put("qnaUnansweredCount", qnaRepository.countByAnswerContentIsNull());
 
-        // 최근 QnA 5개
-        List<Map<String, Object>> recentQnas = qnaRepository.findTop5ByOrderByQuestionCreatedDesc()
-                .stream()
-                .map(qna -> {
-                    Map<String, Object> map = new HashMap<>();
-                    map.put("id", qna.getId());
-                    map.put("title", qna.getQuestionTitle());
-                    return map;
-                })
-                .collect(Collectors.toList());
 
         // 최근 주문 5개
         List<Map<String, Object>> recentOrders = orderRepository.findTop5ByOrderByCreatedAtDesc()
@@ -83,19 +79,11 @@ public class AdminController {
                 })
                 .collect(Collectors.toList());
 
-        // ❗ 변수명 오타 수정
-        summary.put("recentQnas", recentQnas);
         summary.put("recentOrders", recentOrders);
 
         return ResponseEntity.ok(summary);
     }
 
-
-    // ✅ Q&A 전체 목록
-    @GetMapping("/qnas")
-    public Page<Qna> getAllQnas(@PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        return qnaRepository.findAll(pageable);
-    }
 
     // ✅ 사용자 전체 목록
     @GetMapping("/users")
@@ -139,8 +127,6 @@ public class AdminController {
         return ResponseEntity.ok("상태 변경 완료");
     }
 
-
-
     // ✅ 상품 전체 목록
     @GetMapping("/products")
     public Page<Product> getPagedProducts(
@@ -149,29 +135,24 @@ public class AdminController {
         return productRepository.findAll(pageable);
     }
 
-    // ✅ 리뷰 전체 목록 (관리자용)
-    @GetMapping("/reviews")
-    public Page<AdminReviewDto> getAllReviews(@RequestParam(defaultValue = "0") int page,
-                                              @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
-        return reviewRepository.findAll(pageable)
-                .map(review -> new AdminReviewDto(
-                        review.getId(),
-                        review.getContent(),
-                        review.getRating(),
-                        review.getUsername(),
-                        review.getProduct() != null ? review.getProduct().getName() : "삭제된 상품",
-                        review.getImagePath(),
-                        review.getCreatedAt()
-                ));
+    @PostMapping("/products")
+    public ResponseEntity<ProductDto> createProduct(@RequestBody ProductDto dto) {
+        ProductDto saved = productService.createProduct(dto);
+        return ResponseEntity.ok(saved);
     }
 
-    // ✅ 리뷰 삭제 (관리자용)
-    @DeleteMapping("/reviews/{reviewId}")
-    public ResponseEntity<?> adminDeleteReview(@PathVariable Long reviewId) {
-        reviewRepository.deleteById(reviewId);
-        return ResponseEntity.ok("삭제 완료");
+    @PutMapping("/products/{id}")
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto dto) {
+        ProductDto updated = productService.updateProduct(id, dto);
+        return ResponseEntity.ok(updated);
     }
+
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
     // ✅ 사용자 삭제 (관리자용)
     @DeleteMapping("/users/{id}")
@@ -181,6 +162,59 @@ public class AdminController {
         }
         userRepository.deleteById(id);
         return ResponseEntity.ok("삭제 완료");
+    }
+
+    private final ImageService imageService;
+
+    // 1. 이미지 생성 (텍스트 → 이미지)
+    @PostMapping(value = "/images/generate", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> generateImage(@RequestBody ImageController.GenerateImageRequestDto request) {
+        String base64Image = imageService.generateImage(request.getPrompt());
+        // Base64 → 이미지 디코딩
+        byte[] imageBytes = Base64.getDecoder().decode(base64Image);
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(imageBytes);
+    }
+
+    // 2. 이미지 편집 (마스크)
+    @PostMapping(value = "/images/edit", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> editImage(
+            @RequestPart("image") MultipartFile image,
+            @RequestPart("mask") MultipartFile mask,
+            @RequestPart("prompt") String prompt) throws Exception {
+        byte[] imageBytes = image.getBytes();
+        byte[] maskBytes = mask.getBytes();
+        String base64Image = imageService.editImage(imageBytes, maskBytes, prompt);
+
+        byte[] decodedImage = Base64.getDecoder().decode(base64Image);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(decodedImage);
+    }
+
+    // 3. 이미지 변형 (Variation)
+    @PostMapping(value = "/images/variation", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> variationImage(@RequestPart("image") MultipartFile image) throws Exception {
+        byte[] imageBytes = image.getBytes();
+        String base64Image = imageService.variationImage(imageBytes);
+        byte[] decodedImage = Base64.getDecoder().decode(base64Image);
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(decodedImage);
+    }
+
+    // DTO
+    @Data
+    static class GenerateImageRequestDto {
+        private String prompt;
+    }
+
+    @Data
+    @AllArgsConstructor
+    static class ImageResponseDto {
+        private String base64Image; // b64_json 문자열 (base64 encoded png)
     }
 
 }

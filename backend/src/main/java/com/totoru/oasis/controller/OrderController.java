@@ -27,6 +27,8 @@ public class OrderController {
     // 1️⃣ 결제 준비
     @PostMapping("/prepare")
     public ResponseEntity<?> prepareOrder(@RequestBody Map<String, Object> payload, HttpSession session) {
+
+        @SuppressWarnings("unchecked")
         List<Map<String, Object>> items = (List<Map<String, Object>>) payload.get("items");
 
         if (items == null || items.isEmpty()) {

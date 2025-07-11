@@ -1,4 +1,3 @@
-// sectionGroups.js
 export const sectionGroups = [
   {
     title: "신선하게 자라난 농산물",

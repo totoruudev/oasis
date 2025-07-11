@@ -7,8 +7,8 @@ import axios from "axios";
 
 function getProductImageUrl(path) {
     if (!path) return "/default_thumb.jpg";
-    if (path.startsWith("/")) return `http://localhost:8094${path}`;
-    return `http://localhost:8094/images/products/${path}`;
+    if (path.startsWith("/")) return `http://localhost:8095${path}`;
+    return `http://localhost:8095/images/products/${path}`;
 }
 
 export default function ProductDetail() {

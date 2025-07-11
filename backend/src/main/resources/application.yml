@@ -59,6 +59,12 @@ spring:
   ai:
     openai:
       api-key: ${OPENAI_API_KEY}
+      image:
+        options:
+          model: dall-e-3
+          size: 1024x1024
+          quality: standard
+          response-format: url
 
 upload:
   path: src/main/resources/static/upload

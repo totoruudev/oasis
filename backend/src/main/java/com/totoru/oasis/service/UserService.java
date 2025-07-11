@@ -1,7 +1,6 @@
 package com.totoru.oasis.service;
 
 import com.totoru.oasis.entity.User;
-import com.totoru.oasis.repository.ChatRoomRepository;
 import com.totoru.oasis.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,7 +15,6 @@ import java.util.Optional;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final ChatRoomRepository chatRoomRepository;
     private final PasswordEncoder passwordEncoder;
 
     // 회원가입
@@ -84,7 +82,6 @@ public class UserService {
     // 회원탈퇴 (해당 유저의 모든 채팅방 삭제 후)
     @Transactional
     public void deleteUserById(Long userId) {
-        chatRoomRepository.deleteByUser1IdOrUser2Id(userId, userId);
         userRepository.deleteById(userId);
     }
 
@@ -109,19 +106,6 @@ public class UserService {
     // username으로 조회
     public Optional<User> findByUsername(String username) {
         return userRepository.findByUsername(username);
-    }
-
-    // 더미 유저 삭제
-    @Transactional
-    public void deleteDummyUsers() {
-        List<User> dummyUsers = userRepository.findAll().stream()
-                .filter(u -> u.getUsername() != null && u.getUsername().startsWith("user"))
-                .toList();
-
-        dummyUsers.forEach(user -> {
-            chatRoomRepository.deleteByUser1IdOrUser2Id(user.getId(), user.getId());
-            userRepository.deleteById(user.getId());
-        });
     }
 
     // 문자열이 null 또는 빈 문자열인지 검사

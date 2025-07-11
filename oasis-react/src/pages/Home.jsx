@@ -9,7 +9,6 @@ import {
   getSections,
   getEventCarousel,
   getRecommendedCategories,
-  getLatestNotices,
 } from "../api";
 
 function chunkArray(array, size) {
@@ -20,8 +19,8 @@ function chunkArray(array, size) {
 
 function getProductImageUrl(path) {
   if (!path) return "/default_thumb.jpg";
-  if (path.startsWith("/")) return `http://localhost:8094${path}`;
-  return `http://localhost:8094/images/products/${path}`;
+  if (path.startsWith("/")) return `http://localhost:8095${path}`;
+  return `http://localhost:8095/images/products/${path}`;
 }
 
 function getPrettyPrice(price, percent) {
@@ -36,21 +35,18 @@ export default function Home() {
   const [categories, setCategories] = useState([]);
   const [activeTabs, setActiveTabs] = useState(Array(sectionGroups.length).fill(0));
   const [sectionProducts, setSectionProducts] = useState({});
-  const [notices, setNotices] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
-      const [eventRes, catRes, sectionRes, noticeRes] = await Promise.allSettled([
+      const [eventRes, catRes, sectionRes] = await Promise.allSettled([
         getEventCarousel(),
         getRecommendedCategories(),
         getSections(),
-        getLatestNotices(),
       ]);
       if (eventRes.status === "fulfilled") setEvents(eventRes.value.data);
       if (catRes.status === "fulfilled") setCategories(catRes.value.data);
       if (sectionRes.status === "fulfilled") setSectionProducts(sectionRes.value.data);
-      if (noticeRes.status === "fulfilled") setNotices(noticeRes.value.data);
     })();
   }, []);
 
@@ -218,23 +214,6 @@ export default function Home() {
           </section>
         ))}
       </div>
-
-      {/* === 4. 공지사항 === */}
-      <section className="notice-section border-top py-3 bg-light mt-5">
-        <div className="section-title"><h2>공지사항</h2></div>
-        <div className="container">
-          <ul className="list-group list-group-flush">
-            {notices.map((notice) => (
-              <li className="list-group-item" key={notice.id}>
-                <Link to={`/notice/${notice.id}`} className="text-dark">
-                  {notice.title}
-                </Link>
-                <span className="float-end text-muted small">{notice.createdAt?.slice(0, 10)}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
     </div>
   );
 }

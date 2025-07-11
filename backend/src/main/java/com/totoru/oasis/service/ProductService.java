@@ -1,8 +1,12 @@
 package com.totoru.oasis.service;
 
 import com.totoru.oasis.dto.ProductDto;
+import com.totoru.oasis.entity.Category;
 import com.totoru.oasis.entity.Product;
+import com.totoru.oasis.entity.SubCategory;
+import com.totoru.oasis.repository.CategoryRepository;
 import com.totoru.oasis.repository.ProductRepository;
+import com.totoru.oasis.repository.SubCategoryRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +21,8 @@ import java.util.stream.Collectors;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
 
     // [1] 섹션별 서브카테고리 매핑
     private static final Map<String, List<Long>> SECTION_SUBCATEGORY_MAP = Map.of(
@@ -70,5 +76,66 @@ public class ProductService {
     public Page<ProductDto> getProductsByCategory(Long categoryId, Pageable pageable) {
         Page<Product> page = productRepository.findByCategoryIdAndActiveTrue(categoryId, pageable);
         return page.map(ProductDto::from);
+    }
+    /** 상품 등록 **/
+    @Transactional
+    public ProductDto createProduct(ProductDto dto) {
+        Category category = categoryRepository.findById(dto.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("카테고리 없음"));
+        SubCategory subCategory = subCategoryRepository.findById(dto.getSubCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("서브카테고리 없음"));
+
+        Product product = Product.builder()
+                .name(dto.getName())
+                .category(category)
+                .subCategory(subCategory)
+                .price(dto.getPrice())
+                .percent(dto.getPercent())
+                .description(dto.getDescription())
+                .thumbnailimg(dto.getThumbnailimg())
+                .detailimg(dto.getDetailimg())
+                .active(dto.isActive())
+                .views(0)
+                .build();
+
+        Product saved = productRepository.save(product);
+        return ProductDto.from(saved);
+    }
+
+    /** 상품 수정 **/
+    @Transactional
+    public ProductDto updateProduct(Long id, ProductDto dto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("상품 없음"));
+        // 카테고리/서브카테고리 변경
+        if (dto.getCategoryId() != null) {
+            Category category = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("카테고리 없음"));
+            product.setCategory(category);
+        }
+        if (dto.getSubCategoryId() != null) {
+            SubCategory subCategory = subCategoryRepository.findById(dto.getSubCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("서브카테고리 없음"));
+            product.setSubCategory(subCategory);
+        }
+        // 그 외 필드 변경
+        if (dto.getName() != null) product.setName(dto.getName());
+        product.setPrice(dto.getPrice());
+        product.setPercent(dto.getPercent());
+        if (dto.getDescription() != null) product.setDescription(dto.getDescription());
+        if (dto.getThumbnailimg() != null) product.setThumbnailimg(dto.getThumbnailimg());
+        if (dto.getDetailimg() != null) product.setDetailimg(dto.getDetailimg());
+        product.setActive(dto.isActive());
+
+        return ProductDto.from(productRepository.save(product));
+    }
+
+    /** 상품 삭제 (soft delete) **/
+    @Transactional
+    public void deleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("상품 없음"));
+        product.setActive(false); // 소프트 딜리트
+        productRepository.save(product);
     }
 }

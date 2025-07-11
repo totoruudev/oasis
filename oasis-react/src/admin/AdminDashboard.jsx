@@ -33,12 +33,6 @@ export default function AdminDashboard() {
                         <strong>{summary.orderCount}</strong>
                     </div>
                 </div>
-                <div className="col">
-                    <div className="card p-3 text-center">
-                        <div>미답변 QnA</div>
-                        <strong>{summary.qnaUnansweredCount}</strong>
-                    </div>
-                </div>
             </div>
             <div className="row">
                 <div className="col-md-6">
@@ -48,14 +42,6 @@ export default function AdminDashboard() {
                             <li className="list-group-item" key={o.id}>
                                 {o.username} / {o.totalAmount.toLocaleString()}원
                             </li>
-                        )}
-                    </ul>
-                </div>
-                <div className="col-md-6">
-                    <h5>최근 QnA</h5>
-                    <ul className="list-group">
-                        {summary.recentQnas.map(q =>
-                            <li className="list-group-item" key={q.id}>{q.title}</li>
                         )}
                     </ul>
                 </div>

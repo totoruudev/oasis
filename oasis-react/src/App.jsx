@@ -6,21 +6,29 @@ import AdminDashboard from "./admin/AdminDashboard";
 import AdminOrderList from "./admin/AdminOrderList";
 import RequireAdmin from "./admin/RequireAdmin";
 import AdminLayout from "./admin/AdminLayout";
-
+import ChatBox from "./admin/AdminChatBox";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+
 import Home from "./pages/Home";
+
 import LoginPage from "./pages/User/LoginPage";
 import Join from "./pages/User/Join";
 import MyPageMain from "./pages/User/MyPageMain";
+import MyOrdersPage from "./pages/User/MyOrdersPage";
+import MyOrderDetailPage from "./pages/User/MyOrderDetailPage";
+
 import CartPage from './pages/CartPage';
+
+import Chatbot from "./pages/Support/Chatbot";
+
 import ProductList from "./pages/Product/ProductList";
 import ProductDetail from "./pages/Product/ProductDetail";
 import CheckOutPage from "./pages/CheckoutPage";
 import OrderSuccessPage from './pages/OrderSuccessPage';
-import MyOrdersPage from "./pages/User/MyOrdersPage";
-import MyOrderDetailPage from "./pages/User/MyOrderDetailPage";
+
+import SupportMain from "./pages/Support/SupportMain";
 
 function loadUserFromStorage() {
   try {
@@ -30,7 +38,6 @@ function loadUserFromStorage() {
     return null;
   }
 }
-
 
 export default function App() {
   const [user, setUser] = useState(loadUserFromStorage());
@@ -65,21 +72,17 @@ export default function App() {
           <Route path="/" element={<Home user={user} onLogout={handleLogout} />} />
           <Route path="/login" element={<LoginPage onLogin={handleLogin} />} />
           <Route path="/join" element={<Join />} />
-          <Route
-            path="/mypage"
-            element={user ? <MyPageMain user={user} /> : <Navigate to="/login" />}
-          />
+          <Route path="/mypage" element={user ? <MyPageMain user={user} /> : <Navigate to="/login" />} />
           <Route path="/mypage/orders" element={<MyOrdersPage />} />
           <Route path="/mypage/orders/:orderId" element={<MyOrderDetailPage />} />
-          <Route
-            path="/cart"
-            element={user ? <CartPage user={user} /> : <Navigate to="/login" />}
-          />
+          <Route path="/cart" element={user ? <CartPage user={user} /> : <Navigate to="/login" />} />
           <Route path="/order/checkout" element={<CheckOutPage />} />
           <Route path="/order/success" element={<OrderSuccessPage />} />
           <Route path="/products" element={<ProductList />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/products/category/:categoryId" element={<ProductList />} />
+          <Route path="/support" element={<SupportMain />} />
+          <Route path="/chat" element={<Chatbot />} />
 
           {/* 관리자 전용 라우트 */}
           <Route path="/admin/*" element={
@@ -90,6 +93,7 @@ export default function App() {
             <Route index element={<AdminDashboard />} />
             <Route path="orders" element={<AdminOrderList />} />
             <Route path="*" element={<Navigate to="/admin" />} />
+            <ChatBox />
           </Route>
         </Routes>
         <Footer />
