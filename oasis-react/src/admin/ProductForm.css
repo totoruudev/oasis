@@ -1,0 +1,77 @@
+/* ProductForm.css */
+
+.product-form-wrapper {
+    background: #fff;
+    border-radius: 18px;
+    box-shadow: 0 6px 32px rgba(90, 150, 100, 0.06), 0 1.5px 4px rgba(0, 0, 0, 0.04);
+    padding: 40px 32px 32px 32px;
+    max-width: 440px;
+    margin: 48px auto;
+    min-height: 600px;
+    position: relative;
+}
+
+.product-form-wrapper h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: #45b97c;
+    letter-spacing: -0.5px;
+    text-align: center;
+}
+
+.product-form-wrapper label {
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #333;
+}
+
+.product-form-wrapper .form-control,
+.product-form-wrapper textarea {
+    margin-bottom: 16px;
+}
+
+.product-form-wrapper .form-check {
+    margin-bottom: 8px;
+}
+
+.product-form-wrapper .btn {
+    min-width: 120px;
+}
+
+.product-form-wrapper .preview-img {
+    display: block;
+    margin-top: 10px;
+    border-radius: 10px;
+    border: 1.5px solid #eee;
+    max-width: 160px;
+}
+
+.product-form-wrapper .ai-section {
+    background: #f6fff9;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 1.5px solid #e1f4e6;
+}
+
+.product-form-wrapper .btn-success {
+    background: #45b97c;
+    border: none;
+}
+
+.product-form-wrapper .btn-success:hover,
+.product-form-wrapper .btn-success:focus {
+    background: #379663;
+}
+
+.product-form-wrapper .btn-primary {
+    background: #59c59a;
+    border: none;
+}
+
+.product-form-wrapper .btn-primary:hover,
+.product-form-wrapper .btn-primary:focus {
+    background: #37ab78;
+}

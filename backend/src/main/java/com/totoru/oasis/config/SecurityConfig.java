@@ -55,7 +55,9 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/", "/index.html",
                                 "/images/**", "/data/**", "/uploads/**",
-                                "/static/**", "/css/**", "/js/**"
+                                "/static/**", "/css/**", "/js/**",
+                                "/api/images/**", "/api/data/**", "/api/uploads/**",
+                                "/api/static/**", "/api/css/**", "/api/js/**"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/users/join", "/api/users/login", "/api/users/check-*", "/api/users/check/*", "/api/users/check*",
@@ -68,7 +70,9 @@ public class SecurityConfig {
                                 "/api/chat"
                         ).permitAll()
 
-                        .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(
+                                "/api/admin/**", "/api/images/**"
+                        ).hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
