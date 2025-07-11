@@ -11,16 +11,21 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.HashMap;
@@ -39,6 +44,9 @@ public class AdminController {
     private final ProductService productService;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    private final CategoryRepository categoryRepository;
+    private final SubCategoryRepository subCategoryRepository;
+    private final ImageService imageService;
 
     public record AdminReviewDto(
             Long id,
@@ -129,10 +137,44 @@ public class AdminController {
 
     // ✅ 상품 전체 목록
     @GetMapping("/products")
-    public Page<Product> getPagedProducts(
+    public Page<ProductDto> getPagedProducts(
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) Long subCategoryId,
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return productRepository.findAll(pageable);
+        return productService.getProductList(pageable, categoryId, subCategoryId);
+    }
+
+    @GetMapping("/categories")
+    public List<Category> getAdminCategories() {
+        return categoryRepository.findAll();
+    }
+
+    // === 2. 관리자 전용 서브카테고리 전체 조회 (categoryId 필요) ===
+    @GetMapping("/subcategories")
+    public List<SubCategory> getAdminSubCategories(@RequestParam Long categoryId) {
+        return subCategoryRepository.findByCategoryId(categoryId);
+    }
+
+    // === 3. 관리자 이미지 서빙 ===
+    @GetMapping("/images/products/{filename:.+}")
+    public ResponseEntity<Resource> serveAdminProductImage(@PathVariable String filename) {
+        try {
+            // ※ 실제 이미지 저장 경로에 맞게 바꿔주세요!
+            Path imagePath = Paths.get("/images/products").resolve(filename); // 예: "C:/oasis/uploads/products"
+            Resource resource = new UrlResource(imagePath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                // 이미지 확장자에 따라 contentType 다르게 하고 싶으면 별도 처리
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @PostMapping("/products")
@@ -163,8 +205,6 @@ public class AdminController {
         userRepository.deleteById(id);
         return ResponseEntity.ok("삭제 완료");
     }
-
-    private final ImageService imageService;
 
     // 1. 이미지 생성 (텍스트 → 이미지)
     @PostMapping(value = "/images/generate", produces = MediaType.IMAGE_PNG_VALUE)

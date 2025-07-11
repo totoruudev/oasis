@@ -3,12 +3,14 @@
 use oasis;
 show tables;
 
-insert into user (id, address, created_at, email, name, password, profile_img, role, social, tel, username) values
-(1, 'admin_adress', NOW(), 'admin_email', '관리자', 1234, '', 'ADMIN', 0, '', 'admin');
-
+-- select * from event;
 UPDATE user
-SET password = '$2a$12$PWrupq1D6MV03/2gGFbXhOWMh7YzGgfvkfRMh5B5XwZUrdRUIN3ti'
+SET role = 'ADMIN'
 WHERE id = 1;
+
+update user
+set username = 'admin'
+where id = 1;
 
 select * from user;
 
@@ -22,7 +24,6 @@ INSERT INTO event (title, description, banner_img, link_url, start_at, end_at, s
 ('삼성카드로 결제하면 최대 2,000원 즉시 할인!', '', 'Carousel_item_07.jpg', '/event/detail/7', '2025-07-01', '2025-07-15', 7, true),
 ('[아임닭 여름 식단 기획전 2탄] 천원대로 즐기는 여름맞이 가벼운 한끼', '고물가시대, 살도 빼고 식비도 줄여요', 'Carousel_item_08.jpg', '/event/detail/8', '2025-06-18', '2025-07-18', 8, true),
 ('[전북특별자치도 중소기업 상생 특가대전] 맛의 고향, 전북으로 떠나는 여름 맛캉스', '지역 농가가 선사하는 건강한 여름의 맛', 'Carousel_item_09.jpg', '/event/detail/9', '2025-06-15', '2025-07-14', 9, true);
-select * from event;
 
 -- 카테고리
 INSERT INTO category (name, icon) VALUES
@@ -164,6 +165,27 @@ INSERT INTO product (
 -- 국내산 양파1.5kg(6개입)
 (1, NOW(), '국내산 양파1.5kg(6개입)', 25, 3590, '', 'k_onion_15kg_detail.jpg', 'k_onion_15kg_thumb.jpg', 1, 5, 0);
 
+-- 농산물: 우리땅채소
+INSERT INTO product (
+  active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
+) VALUES
+-- 친환경 양배추
+(1, NOW(), '국내산 양배추(1통,800g-1kg)', 34, 2280, '', 'k_cabbage_800g_detail.jpg', 'k_cabbage_800g_thumb.jpg', 1, 5, 0),
+-- 무농약 꿀맛 고구마
+(1, NOW(), '무농약 꿀맛 고구마 (3kg)', 31, 17800, '', 'sweetpotato_3kg_detail.jpg', 'sweetpotato_3kg_thumb.jpg', 1, 5, 0),
+-- 국내산 두백 햇감자 (특~대, 1.7kg내외)
+(1, NOW(), '국내산 두백 햇감자 (특~대, 1.7kg내외)', 34, 6500, '', 'potato_big_17kg_detail.jpg', 'potato_big_17kg_thumb.jpg', 1, 5, 0),
+-- 저탄소 햇 홍감자 (1kg, 5~10개)
+(1, NOW(), '저탄소 햇 홍감자 (1kg, 5~10개)', 44, 4440, '', 'red_potato_1kg_detail.jpg', 'red_potato_1kg_thumb.jpg', 1, 5, 0),
+-- 친환경 양배추 (1통, 1.3kg내외/무농약이상)
+(1, NOW(), '친환경 양배추 (1통, 1.3kg내외/무농약이상)', 34, 4250, '', 'eco_cabbage_13kg_detail.jpg', 'eco_cabbage_13kg_thumb.jpg', 1, 5, 0),
+-- 국내산 감자(1kg.6~10개)
+(1, NOW(), '국내산 감자(1kg.6~10개)', 43, 3990, '', 'k_potato_1kg_detail.jpg', 'k_potato_1kg_thumb.jpg', 1, 5, 0),
+-- 저탄소 두백 햇감자 (1kg, 5~10개)
+(1, NOW(), '저탄소 두백 햇감자 (1kg, 5~10개)', 46, 3780, '', 'double_potato_1kg_detail.jpg', 'double_potato_1kg_thumb.jpg', 1, 5, 0),
+-- 국내산 양파1.5kg(6개입)
+(1, NOW(), '국내산 양파1.5kg(6개입)', 25, 3590, '', 'k_onion_15kg_detail.jpg', 'k_onion_15kg_thumb.jpg', 1, 5, 0);
+
 -- 농산물: 샐러드채소
 INSERT INTO product (
   active, created_at, name, percent, price, description, detailimg, thumbnailimg, category_id, sub_category_id, views
@@ -238,7 +260,4 @@ INSERT INTO product (
 (1, NOW(), '크리스피코코넛(300g)', 12, 13000, '', 'crispy_coconut_300g_detail.jpg', 'crispy_coconut_300g_thumb.jpg', 1, 13, 0),
 (1, NOW(), '웰콩 서리태볶음가루(500g)', 25, 16500, '', 'wellkong_blackbean_powder_500g_detail.jpg', 'wellkong_blackbean_powder_500g_thumb.jpg', 1, 14, 0);
 
-select * from sub_category;
 select * from product;
-select * from cart_item;
-select * from orders;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { generateImage, editImage, variationImage } from '../api';
 
-const ChatBox = () => {
+const AdminChatBox = () => {
     const [prompt, setPrompt] = useState('');
     const [imageUrl, setImageUrl] = useState('');
     const [imageFile, setImageFile] = useState(null);
@@ -64,4 +64,4 @@ const ChatBox = () => {
         </div>
     );
 };
-export default ChatBox;
+export default AdminChatBox;

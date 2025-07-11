@@ -7,6 +7,8 @@ import AdminOrderList from "./admin/AdminOrderList";
 import RequireAdmin from "./admin/RequireAdmin";
 import AdminLayout from "./admin/AdminLayout";
 import ChatBox from "./admin/AdminChatBox";
+import AdminProductList from "./admin/AdminProductList";
+import ProductForm from "./admin/ProductForm";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -29,6 +31,8 @@ import CheckOutPage from "./pages/CheckoutPage";
 import OrderSuccessPage from './pages/OrderSuccessPage';
 
 import SupportMain from "./pages/Support/SupportMain";
+
+
 
 function loadUserFromStorage() {
   try {
@@ -92,8 +96,10 @@ export default function App() {
           }>
             <Route index element={<AdminDashboard />} />
             <Route path="orders" element={<AdminOrderList />} />
+            <Route path="products" element={<AdminProductList />} />
+            <Route path="productform" element={<ProductForm />} />
+            <Route path="ai-images" element={<ChatBox />} />
             <Route path="*" element={<Navigate to="/admin" />} />
-            <ChatBox />
           </Route>
         </Routes>
         <Footer />

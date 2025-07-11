@@ -138,4 +138,17 @@ public class ProductService {
         product.setActive(false); // 소프트 딜리트
         productRepository.save(product);
     }
+
+    public Page<ProductDto> getProductList(Pageable pageable, Long categoryId, Long subCategoryId) {
+        if (categoryId != null && subCategoryId != null) {
+            return productRepository.findByCategoryIdAndSubCategoryIdAndActiveTrue(categoryId, subCategoryId, pageable)
+                    .map(ProductDto::from);
+        } else if (categoryId != null) {
+            return productRepository.findByCategoryIdAndActiveTrue(categoryId, pageable)
+                    .map(ProductDto::from);
+        } else {
+            return productRepository.findByActiveTrue(pageable)
+                    .map(ProductDto::from);
+        }
+    }
 }

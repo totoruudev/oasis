@@ -29,4 +29,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     @Query("SELECT p FROM Product p WHERE p.active = true AND p.category.id = :categoryId ORDER BY p.id ASC")
     Page<Product> findByCategoryIdAndActiveTrue(@Param("categoryId") Long categoryId, Pageable pageable);
 
+    @Query("SELECT p FROM Product p WHERE p.active = true AND p.category.id = :categoryId AND p.subCategory.id = :subCategoryId")
+    Page<Product> findByCategoryIdAndSubCategoryIdAndActiveTrue(@Param("categoryId") Long categoryId, @Param("subCategoryId") Long subCategoryId, Pageable pageable);
+
+    Page<Product> findByActiveTrue(Pageable pageable);
 }
