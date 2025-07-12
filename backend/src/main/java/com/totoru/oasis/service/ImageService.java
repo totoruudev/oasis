@@ -1,7 +1,9 @@
 package com.totoru.oasis.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.openai.OpenAiImageModel;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,15 @@ import java.util.Map;
 public class ImageService {
     private final OpenAiImageModel imageModel;
     private final WebClient webClient;
-    private final String OPENAI_API_KEY = System.getenv("OPENAI_API_KEY");
+//    private final String OPENAI_API_KEY = System.getenv("OPENAI_API_KEY");
+
+    @Value("${OPENAI_API_KEY}")
+    private String openaiApiKey;
+
+    @PostConstruct
+    public void checkKey() {
+        System.out.println("OpenAI Key(앞 8자리): " + (openaiApiKey != null ? openaiApiKey.substring(0,8) : "NULL"));
+    }
 
     // 1. 이미지 생성 : POST -> https://api.openai.com/v1/images/generations
     public String generateImage(String prompt) {
@@ -31,7 +41,7 @@ public class ImageService {
 
         Map<String, Object> response = webClient.post()
                 .uri("https://api.openai.com/v1/images/generations")
-                .header("Authorization", "Bearer " + OPENAI_API_KEY)
+                .header("Authorization", "Bearer " + openaiApiKey)
                 .contentType(MediaType.APPLICATION_JSON)
                 .bodyValue(request)
                 .retrieve()
@@ -65,7 +75,7 @@ public class ImageService {
 
         return webClient.post()
                 .uri("https://api.openai.com/v1/images/edits")
-                .header("Authorization", "Bearer " + OPENAI_API_KEY)
+                .header("Authorization", "Bearer " + openaiApiKey)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(multipartData))
                 .retrieve()
@@ -96,7 +106,7 @@ public class ImageService {
 
         return webClient.post()
                 .uri("https://api.openai.com/v1/images/variations")
-                .header("Authorization", "Bearer " + OPENAI_API_KEY)
+                .header("Authorization", "Bearer " + openaiApiKey)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .body(BodyInserters.fromMultipartData(multipartData))
                 .retrieve()

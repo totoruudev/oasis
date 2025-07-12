@@ -67,6 +67,7 @@ export default function App() {
         <Header
           isLoggedIn={!!user}
           userName={user?.username || ""}
+          userRole={user?.role}
           onLogout={handleLogout}
         />
 

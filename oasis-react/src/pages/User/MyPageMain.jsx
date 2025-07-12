@@ -1,11 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-// 예시 props 구조
-// user = { id, username, name, role }
-// wishlist = [{ id, name, image, price }]
-// reviewList = [{ id, title, content, date }]
-
 export default function MyPageMain({ user, wishlist = [], reviewList = [] }) {
     console.log("user값 확인:", user);
     // 최신순 3개

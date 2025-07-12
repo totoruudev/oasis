@@ -208,7 +208,7 @@ public class AdminController {
 
     // 1. 이미지 생성 (텍스트 → 이미지)
     @PostMapping(value = "/images/generate", produces = MediaType.IMAGE_PNG_VALUE)
-    public ResponseEntity<byte[]> generateImage(@RequestBody ImageController.GenerateImageRequestDto request) {
+    public ResponseEntity<byte[]> generateImage(@RequestBody GenerateImageRequestDto request) {
         String base64Image = imageService.generateImage(request.getPrompt());
         // Base64 → 이미지 디코딩
         byte[] imageBytes = Base64.getDecoder().decode(base64Image);
