@@ -18,7 +18,7 @@ export default function DallEModal({ show, onClose, onSelect }) {
         if (!prompt) return alert("프롬프트를 입력하세요.");
         setLoading(true);
         try {
-            const res = await axios.post("/api/admin/generate", { prompt }, { responseType: "blob" });
+            const res = await axios.post("/api/admin/images/generate", { prompt }, { responseType: "blob" });
             setImageUrl(URL.createObjectURL(res.data));
         } finally {
             setLoading(false);
@@ -34,7 +34,7 @@ export default function DallEModal({ show, onClose, onSelect }) {
             formData.append('image', imageFile);
             formData.append('mask', maskFile);
             formData.append('prompt', prompt);
-            const res = await axios.post("/api/admin/edit", formData, { responseType: "blob" });
+            const res = await axios.post("/api/admin/images/edit", formData, { responseType: "blob" });
             setImageUrl(URL.createObjectURL(res.data));
         } finally {
             setLoading(false);
@@ -48,7 +48,7 @@ export default function DallEModal({ show, onClose, onSelect }) {
         try {
             const formData = new FormData();
             formData.append('image', imageFile);
-            const res = await axios.post("/api/admin/variation", formData, { responseType: "blob" });
+            const res = await axios.post("/api/admin/images/variation", formData, { responseType: "blob" });
             setImageUrl(URL.createObjectURL(res.data));
         } finally {
             setLoading(false);
@@ -121,10 +121,11 @@ export default function DallEModal({ show, onClose, onSelect }) {
                         {/* 이미지 생성 */}
                         {mode === "generate" && (
                             <>
-                                <input
-                                    type="text"
+                                <textarea
                                     className="form-control mb-2"
-                                    placeholder="프롬프트 입력"
+                                    style={{ minHeight: 64, resize: "vertical" }}  // 넓게!
+                                    placeholder={`예시: '하얀 배경에 신선한 유정란 10구, 상큼한 느낌, 고해상도, 광고용 사진 스타일'
+상품과 어울리는 키워드, 촬영 느낌, 색감 등을 자연어로 자세히 입력해보세요!`}
                                     value={prompt}
                                     onChange={e => setPrompt(e.target.value)}
                                     disabled={loading}

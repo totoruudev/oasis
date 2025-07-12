@@ -75,3 +75,11 @@
 .product-form-wrapper .btn-primary:focus {
     background: #37ab78;
 }
+
+.dalle-prompt-area {
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 12px;
+  min-height: 64px;
+  resize: vertical;
+}

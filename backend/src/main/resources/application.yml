@@ -70,7 +70,7 @@ upload:
   path: src/main/resources/static/upload
 
 file:
-  upload-dir: ./src/main/resources/uploads
+  upload-dir: ../oasis/upload
 
 toss:
   payments:
