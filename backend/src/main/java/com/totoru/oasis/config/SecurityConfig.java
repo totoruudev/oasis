@@ -71,7 +71,8 @@ public class SecurityConfig {
                         ).permitAll()
 
                         .requestMatchers(
-                                "/api/admin/**", "/api/images/**"
+                                "/api/admin/**", "/api/images/**",
+                                "/api/upload/**"
                         ).hasRole("ADMIN")
 
                         .anyRequest().authenticated()
