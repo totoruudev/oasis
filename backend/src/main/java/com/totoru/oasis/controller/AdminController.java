@@ -2,11 +2,13 @@ package com.totoru.oasis.controller;
 
 import com.totoru.oasis.dto.OrderResponse;
 import com.totoru.oasis.dto.ProductDto;
+import com.totoru.oasis.dto.UserDto;
 import com.totoru.oasis.entity.*;
 import com.totoru.oasis.repository.*;
 import com.totoru.oasis.service.ImageService;
 import com.totoru.oasis.service.OrderService;
 import com.totoru.oasis.service.ProductService;
+import com.totoru.oasis.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -39,6 +41,7 @@ import java.util.stream.Collectors;
 @CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 public class AdminController {
 
+    private final UserService userService;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final ProductService productService;
@@ -93,13 +96,31 @@ public class AdminController {
     }
 
 
-    // ✅ 사용자 전체 목록
+    // 전체/검색/페이지네이션
     @GetMapping("/users")
-    public Page<User> getUsers(
-            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    public ResponseEntity<?> list(
+            @RequestParam(defaultValue = "") String search,
+            @RequestParam(defaultValue = "1") int page
     ) {
-        return userRepository.findAll(pageable);
+        int pageSize = 10;
+        return ResponseEntity.ok(userService.getUserList(search, page, pageSize));
     }
+
+    // 상세
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserDto> getUserDetail(@PathVariable Long id) {
+        return userService.getUserDetail(id)
+                .map(user -> ResponseEntity.ok(UserDto.from(user)))
+                .orElseThrow(() -> new EntityNotFoundException("해당 회원을 찾을 수 없습니다: id=" + id));
+    }
+
+    // 삭제
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        userService.adminDeleteUser(id);
+        return ResponseEntity.ok("삭제 완료");
+    }
+
 
     // ✅ 주문 전체 목록
     @GetMapping("/orders")
@@ -193,17 +214,6 @@ public class AdminController {
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
-    }
-
-
-    // ✅ 사용자 삭제 (관리자용)
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUserByAdmin(@PathVariable Long id) {
-        if (!userRepository.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-        userRepository.deleteById(id);
-        return ResponseEntity.ok("삭제 완료");
     }
 
     // 1. 이미지 생성 (텍스트 → 이미지)

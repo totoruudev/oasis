@@ -1,13 +1,18 @@
 package com.totoru.oasis.service;
 
+import com.totoru.oasis.dto.UserDto;
 import com.totoru.oasis.entity.User;
 import com.totoru.oasis.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -111,5 +116,35 @@ public class UserService {
     // 문자열이 null 또는 빈 문자열인지 검사
     private boolean isEmpty(String s) {
         return s == null || s.trim().isEmpty();
+    }
+
+    // 관리자용: 검색 + 페이지네이션
+    public Map<String, Object> getUserList(String keyword, int page, int pageSize) {
+        Page<User> userPage = userRepository.findByKeyword(
+                keyword,
+                PageRequest.of(page - 1, pageSize, Sort.by(Sort.Direction.DESC, "id"))
+        );
+        List<UserDto> userDtos = userPage.getContent().stream()
+                .map(UserDto::from)
+                .toList();
+        int totalPage = userPage.getTotalPages();
+
+        return Map.of(
+                "users", userDtos,
+                "totalPage", totalPage
+        );
+    }
+
+
+
+    // 상세
+    public Optional<User> getUserDetail(Long id) {
+        return userRepository.findById(id);
+    }
+
+    // 삭제(회원 탈퇴)
+    @Transactional
+    public void adminDeleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }

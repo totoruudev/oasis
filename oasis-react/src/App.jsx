@@ -9,6 +9,8 @@ import AdminLayout from "./admin/AdminLayout";
 import ChatBox from "./admin/AdminChatBox";
 import AdminProductList from "./admin/AdminProductList";
 import ProductForm from "./admin/ProductForm";
+import AdminUserList from "./admin/AdminUserList";
+import AdminUserDetail from "./admin/AdminUserDetail";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -96,11 +98,13 @@ export default function App() {
             </RequireAdmin>
           }>
             <Route index element={<AdminDashboard />} />
+            <Route path="*" element={<Navigate to="/admin" />} />
             <Route path="orders" element={<AdminOrderList />} />
             <Route path="products" element={<AdminProductList />} />
             <Route path="productform" element={<ProductForm />} />
+            <Route path="users" element={<AdminUserList />} />
+            <Route path="users/:id" element={<AdminUserDetail />} />
             <Route path="ai-images" element={<ChatBox />} />
-            <Route path="*" element={<Navigate to="/admin" />} />
           </Route>
         </Routes>
         <Footer />

@@ -1,5 +1,6 @@
 package com.totoru.oasis.controller;
 
+import com.totoru.oasis.dto.UserDto;
 import com.totoru.oasis.entity.User;
 import com.totoru.oasis.repository.UserRepository;
 import com.totoru.oasis.service.UserService;
@@ -173,17 +174,17 @@ public class UserController {
     }
 
     // 전체 유저 리스트 (어드민 용)
-    @GetMapping("/users")
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
+//    @GetMapping("/users")
+//    public List<User> getAllUsers() {
+//        return userRepository.findAll();
+//    }
 
     // 유저 삭제 (어드민 용)
-    @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
-        userRepository.deleteById(id);
-        return ResponseEntity.ok("삭제 완료");
-    }
+//    @DeleteMapping("/users/{id}")
+//    public ResponseEntity<?> deleteUser(@PathVariable("id") Long id) {
+//        userRepository.deleteById(id);
+//        return ResponseEntity.ok("삭제 완료");
+//    }
 
     // 소셜 회원 여부 확인
     @GetMapping("/check-social")
@@ -205,4 +206,6 @@ public class UserController {
         boolean exists = userRepository.existsByEmail(email);
         return ResponseEntity.ok(Map.of("available", !exists));
     }
+
+
 }
