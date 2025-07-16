@@ -1,14 +1,9 @@
 package com.totoru.oasis.controller;
 
-import com.totoru.oasis.dto.OrderResponse;
-import com.totoru.oasis.dto.ProductDto;
-import com.totoru.oasis.dto.UserDto;
+import com.totoru.oasis.dto.*;
 import com.totoru.oasis.entity.*;
 import com.totoru.oasis.repository.*;
-import com.totoru.oasis.service.ImageService;
-import com.totoru.oasis.service.OrderService;
-import com.totoru.oasis.service.ProductService;
-import com.totoru.oasis.service.UserService;
+import com.totoru.oasis.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,6 +42,7 @@ public class AdminController {
     private final ProductService productService;
     private final OrderRepository orderRepository;
     private final OrderService orderService;
+    private final CategoryService categoryService;
     private final CategoryRepository categoryRepository;
     private final SubCategoryRepository subCategoryRepository;
     private final ImageService imageService;
@@ -196,6 +192,21 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.status(500).build();
         }
+    }
+
+    @PostMapping("/categories")
+    public ResponseEntity<Category> createCategory(@RequestBody CategoryDto dto) {
+        return ResponseEntity.ok(categoryService.createCategory(dto));
+    }
+
+    @PostMapping("/categories/sub")
+    public ResponseEntity<SubCategory> createSubCategory(@RequestBody SubCategoryDto dto) {
+        return ResponseEntity.ok(categoryService.createSubCategory(dto));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<Category>> listCategories() {
+        return ResponseEntity.ok(categoryService.getAllCategories());
     }
 
     @PostMapping("/products")

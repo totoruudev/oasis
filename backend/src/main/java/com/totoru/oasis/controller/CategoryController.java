@@ -1,9 +1,12 @@
 package com.totoru.oasis.controller;
 
+import com.totoru.oasis.dto.CategoryDto;
+import com.totoru.oasis.dto.SubCategoryDto;
 import com.totoru.oasis.entity.Category;
 import com.totoru.oasis.entity.SubCategory;
 import com.totoru.oasis.service.CategoryService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

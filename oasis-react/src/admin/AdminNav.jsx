@@ -16,6 +16,11 @@ export default function AdminNav() {
                     </Link>
                 </li>
                 <li>
+                    <Link className="nav-link text-dark" to="/admin/categories">
+                        카테고리관리
+                    </Link>
+                </li>
+                <li>
                     <Link className="nav-link text-dark" to="/admin/products">
                         상품관리
                     </Link>

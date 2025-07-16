@@ -11,6 +11,7 @@ import AdminProductList from "./admin/AdminProductList";
 import ProductForm from "./admin/ProductForm";
 import AdminUserList from "./admin/AdminUserList";
 import AdminUserDetail from "./admin/AdminUserDetail";
+import AdminCategoryForm from "./admin/AdminCategoryForm";
 
 import Header from "./components/Header";
 import Footer from "./components/Footer";
@@ -99,6 +100,7 @@ export default function App() {
           }>
             <Route index element={<AdminDashboard />} />
             <Route path="*" element={<Navigate to="/admin" />} />
+            <Route path="categories" element={<AdminCategoryForm />} />
             <Route path="orders" element={<AdminOrderList />} />
             <Route path="products" element={<AdminProductList />} />
             <Route path="productform" element={<ProductForm />} />
