@@ -24,8 +24,12 @@ public class ProductDto {
     private String description;
     private String thumbnailimg;
     private String detailimg;
-    private boolean active;
+    private Boolean active;
     private int views;
+
+    public Boolean getActive() {
+        return active;
+    }
 
     public static ProductDto from(Product p) {
         return ProductDto.builder()

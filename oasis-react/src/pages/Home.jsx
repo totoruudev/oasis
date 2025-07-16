@@ -31,8 +31,8 @@ function getPrettyPrice(price, percent) {
 }
 
 export default function Home() {
-  const [events, setEvents] = useState([]);
-  const [categories, setCategories] = useState([]);
+  // const [events, setEvents] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [activeTabs, setActiveTabs] = useState(Array(sectionGroups.length).fill(0));
   const [sectionProducts, setSectionProducts] = useState({});
   const navigate = useNavigate();
@@ -44,8 +44,8 @@ export default function Home() {
         getRecommendedCategories(),
         getSections(),
       ]);
-      if (eventRes.status === "fulfilled") setEvents(eventRes.value.data);
-      if (catRes.status === "fulfilled") setCategories(catRes.value.data);
+      // if (eventRes.status === "fulfilled") setEvents(eventRes.value.data);
+      // if (catRes.status === "fulfilled") setCategories(catRes.value.data);
       if (sectionRes.status === "fulfilled") setSectionProducts(sectionRes.value.data);
     })();
   }, []);
@@ -65,13 +65,13 @@ export default function Home() {
 
 
   // 이벤트 캐러셀 그룹핑
-  const eventSlides = chunkArray(events, 3);
+  // const eventSlides = chunkArray(events, 3);
 
   return (
     <div className="container-fluid px-0 Home">
 
       {/* === 1. 이벤트 캐러셀 === */}
-      <section>
+      {/* <section>
         <div id="eventCarousel" className="event-slide carousel slide mb-4" data-bs-ride="carousel">
           <div className="carousel-inner">
             {eventSlides.length === 0 ? (
@@ -116,10 +116,10 @@ export default function Home() {
             </>
           )}
         </div>
-      </section>
+      </section> */}
 
       {/* === 2. 추천 카테고리 === */}
-      <div className="category-sections-wrap">
+      {/* <div className="category-sections-wrap">
         <section className="category-section py-4">
           <div className="section-title"><h2>추천 카테고리</h2></div>
           <div className="category-main-box p-3 mb-4">
@@ -138,7 +138,7 @@ export default function Home() {
             </div>
           </div>
         </section>
-      </div>
+      </div> */}
 
       {/* === 3. 섹션별 상품 === */}
       <div className="category-sections-wrap">

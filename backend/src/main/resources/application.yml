@@ -67,10 +67,10 @@ spring:
           response-format: url
 
 upload:
-  path: src/main/resources/static/upload
+  path: src/main/resources/static/uploads
 
 file:
-  upload-dir: ../oasis/upload
+  upload-dir: G:/oasis/uploads
 
 toss:
   payments:

@@ -91,10 +91,10 @@ public class ProductService {
                 .subCategory(subCategory)
                 .price(dto.getPrice())
                 .percent(dto.getPercent())
-                .description(dto.getDescription())
+                .description(dto.getDescription() != null ? dto.getDescription() : "")
                 .thumbnailimg(dto.getThumbnailimg())
                 .detailimg(dto.getDetailimg())
-                .active(dto.isActive())
+                .active(dto.getActive() != null ? dto.getActive() : true)
                 .views(0)
                 .build();
 
@@ -125,7 +125,7 @@ public class ProductService {
         if (dto.getDescription() != null) product.setDescription(dto.getDescription());
         if (dto.getThumbnailimg() != null) product.setThumbnailimg(dto.getThumbnailimg());
         if (dto.getDetailimg() != null) product.setDetailimg(dto.getDetailimg());
-        product.setActive(dto.isActive());
+        if (dto.getActive() != null) product.setActive(dto.getActive());
 
         return ProductDto.from(productRepository.save(product));
     }

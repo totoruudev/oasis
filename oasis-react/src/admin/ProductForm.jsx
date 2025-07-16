@@ -19,6 +19,8 @@ export default function ProductForm({ initialData, onSubmit }) {
     const [imgType, setImgType] = useState("upload");
     const [showModal, setShowModal] = useState(false);
 
+    const MAX_FILE_SIZE = 10 * 1024 * 1024;
+
     // 카테고리/서브카테고리 데이터 불러오기 (최초 1회)
     useEffect(() => {
         axios.get("/api/admin/categories").then(res => setCategories(res.data));
@@ -33,14 +35,29 @@ export default function ProductForm({ initialData, onSubmit }) {
     }, [categoryId]);
 
     // 썸네일 업로드
-    const handleThumbFileChange = e => setUploadThumbFile(e.target.files[0]);
+    const handleThumbFileChange = e => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (file.size > MAX_FILE_SIZE) {
+            alert("파일 크기는 10MB를 초과할 수 없습니다.");
+            return;
+        }
+
+        setUploadThumbFile(file);
+    };
     const handleThumbUpload = async () => {
         if (!uploadThumbFile) return alert("파일을 선택하세요.");
+        if (uploadThumbFile.size > MAX_FILE_SIZE) {
+            alert("파일 크기는 10MB를 초과할 수 없습니다.");
+            return;
+        }
         const formData = new FormData();
         formData.append("file", uploadThumbFile);
         const res = await axios.post("/api/upload", formData, {
             headers: { "Content-Type": "multipart/form-data" }
         });
+        console.log("썸네일 업로드 응답:", res.data);
         setThumbnailimg(res.data.path);
         alert("썸네일 이미지 업로드 성공");
     };
@@ -76,22 +93,37 @@ export default function ProductForm({ initialData, onSubmit }) {
     // 등록
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        console.log("🔥 name:", name);
+        console.log("🔥 categoryId:", categoryId);
+        console.log("🔥 subCategoryId:", subCategoryId);
+        console.log("🔥 thumbnailimg:", thumbnailimg);
+        console.log("🔥 detailimg:", detailimg);
+
         if (!name || !categoryId || !subCategoryId || !thumbnailimg || !detailimg) {
             alert("모든 필수 항목을 입력하세요!");
             return;
         }
         const productData = {
             name,
-            category_id: categoryId,
-            sub_category_id: subCategoryId,
+            categoryId: Number(categoryId),
+            subCategoryId: Number(subCategoryId),
             price,
             percent,
             thumbnailimg,
             detailimg,
+            description: "",
+            active: true
         };
-        await axios.post("/api/admin/products", productData);
-        alert("상품 등록 완료!");
-        if (onSubmit) onSubmit();
+    
+        try {
+            await axios.post("/api/admin/products", productData);
+            alert("상품 등록 완료!");
+            if (onSubmit) onSubmit();
+        } catch (err) {
+            console.error("상품 등록 실패:", err.response?.data || err.message);
+            alert("상품 등록 실패: " + (err.response?.data?.message || err.message));
+        }
     };
 
     return (

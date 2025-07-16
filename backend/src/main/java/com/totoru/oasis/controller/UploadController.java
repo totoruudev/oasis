@@ -32,7 +32,7 @@ public class UploadController {
 
             // 3. (선택) DB저장, 썸네일 생성, 리턴값 가공 등
 
-            return ResponseEntity.ok(Map.of("fileUrl", "/uploads/" + fileName));
+            return ResponseEntity.ok(Map.of("path", "/uploads" + fileName));
         } catch (Exception e) {
             return ResponseEntity.status(500).body("업로드 실패: " + e.getMessage());
         }
