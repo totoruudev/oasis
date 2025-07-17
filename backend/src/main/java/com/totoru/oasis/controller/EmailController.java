@@ -16,7 +16,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/email")
-@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
+
 public class EmailController {
 
     private final JavaMailSender mailSender;

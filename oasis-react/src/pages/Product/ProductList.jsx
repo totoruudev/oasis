@@ -17,8 +17,8 @@ const CATEGORY_TITLES = { 1: "농산", 2: "축산", 3: "수산", 4: "간식" , 5
 
 function getProductImageUrl(path) {
     if (!path) return "/default_thumb.jpg";
-    if (path.startsWith("/")) return `http://localhost:8095${path}`;
-    return `http://localhost:8095/images/products/${path}`;
+    if (path.startsWith("/")) return `${process.env.REACT_APP_API_BASE_URL}${path}`;
+    return `${process.env.REACT_APP_API_BASE_URL}/${path}`;
 }
 
 function getPrettyPrice(price, percent) {

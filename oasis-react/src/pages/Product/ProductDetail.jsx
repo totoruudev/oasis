@@ -7,8 +7,8 @@ import axios from "axios";
 
 function getProductImageUrl(filename) {
     if (!filename) return "/default_thumb.jpg";
-    if (filename.startsWith("/")) return `http://localhost:8095${filename}`;
-    return `http://localhost:8095/images/products/${filename}`;
+    if (filename.startsWith("/")) return `${process.env.REACT_APP_API_BASE_URL}${filename}`;
+    return `${process.env.REACT_APP_API_BASE_URL}/images/products/${filename}`;
 }
 
 export default function ProductDetail() {
