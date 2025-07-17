@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "../api";
 import { Link, useNavigate } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 function getProductImageUrl(path) {
     if (!path) return "/default_thumb.jpg";
-    if (path.startsWith("/")) return `http://localhost:8095${path}`;
-    return `http://localhost:8095/images/products/${path}`;
+    if (path.startsWith("/")) return `${process.env.REACT_APP_API_BASE_URL}${path}`;
+    return `${process.env.REACT_APP_API_BASE_URL}/images/products/${path}`;
 }
 
 export default function CartPage() {

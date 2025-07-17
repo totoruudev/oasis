@@ -19,8 +19,8 @@ function chunkArray(array, size) {
 
 function getProductImageUrl(path) {
   if (!path) return "/default_thumb.jpg";
-  if (path.startsWith("/")) return `http://localhost:8095${path}`;
-  return `http://localhost:8095/images/products/${path}`;
+  if (path.startsWith("/")) return `${process.env.REACT_APP_API_BASE_URL}${path}`;
+  return `${process.env.REACT_APP_API_BASE_URL}/${path}`;
 }
 
 function getPrettyPrice(price, percent) {

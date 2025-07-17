@@ -186,7 +186,7 @@ export default function CheckoutPage() {
                                 {items.map(item => (
                                     <li className="list-group-item d-flex align-items-center" key={item.id}>
                                         <img
-                                            src={`http://localhost:8095/images/products/${item.thumbnailimg || "default_thumb.jpg"}`}
+                                            src={`${process.env.REACT_APP_API_BASE_URL}/images/products/${item.thumbnailimg || "default_thumb.jpg"}`}
                                             alt={item.name}
                                             width={100}
                                             height={100}

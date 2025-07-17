@@ -2,18 +2,18 @@ import axios from "axios";
 
 // ✅ 인증 필요 요청용 인스턴스
 const axiosInstance = axios.create({
-    baseURL: "http://localhost:8095",
+    baseURL: process.env.REACT_APP_API_BASE_URL,
     withCredentials: true,
 });
 
 // ✅ 인증 필요 없는 공개 요청용 인스턴스
 const axiosPublic = axios.create({
-    baseURL: "http://localhost:8095",
+    baseURL: process.env.REACT_APP_API_BASE_URL,
     withCredentials: false,
 });
 
 const chatAPI = axios.create({
-    baseURL: "http://localhost:8095/api/admin/images",
+    baseURL: `${process.env.REACT_APP_API_BASE_URL}/api/admin/images`,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -40,14 +40,14 @@ export const generateImage = async (prompt) => {
     return URL.createObjectURL(new Blob([res.data], { type: 'image/png' }));
 };
 export const editImage = async (formData) => {
-    const res = await axios.post('http://localhost:8095/api/admin/images/edit', formData, {
+    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/admin/images/edit`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         responseType: 'arraybuffer',
     });
     return URL.createObjectURL(new Blob([res.data], { type: 'image/png' }));
 };
 export const variationImage = async (formData) => {
-    const res = await axios.post('http://localhost:8095/api/admin/images/variation', formData, {
+    const res = await axios.post(`${process.env.REACT_APP_API_BASE_URL}/api/admin/images/variation`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         responseType: 'arraybuffer',
     });
