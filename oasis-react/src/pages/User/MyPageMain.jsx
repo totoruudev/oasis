@@ -12,11 +12,11 @@ export default function MyPageMain({ user, wishlist = [], reviewList = [] }) {
             <h2 className="mb-4">마이페이지</h2>
             {/* 상단 버튼 (내 정보, 주문내역, 관리자 이동) */}
             <div className="row mb-4 g-3">
-                <div className="col-12 col-md-auto">
-                    <Link to="/mypage/verify-password" className="btn btn-outline-primary w-100">
+                {/* <div className="col-12 col-md-auto">
+                    <Link to="/mypage" className="btn btn-outline-primary w-100">
                         내 정보 관리
                     </Link>
-                </div>
+                </div> */}
                 <div className="col-12 col-md-auto">
                     <Link to="/mypage/orders" className="btn btn-outline-secondary w-100">
                         주문 내역

@@ -21,20 +21,22 @@ public class UploadController {
     @PostMapping("/upload")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) {
         try {
-            // 1. 폴더 없으면 생성
+            System.out.println("업로드 경로: " + uploadDir);
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
 
-            // 2. 파일명 중복처리, 보안처리 등
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
             File dest = new File(dir, fileName);
             file.transferTo(dest);
 
-            // 3. (선택) DB저장, 썸네일 생성, 리턴값 가공 등
-
-            return ResponseEntity.ok(Map.of("path", "/uploads" + fileName));
+            // 파일명만 프론트로 반환!
+            return ResponseEntity.ok(Map.of("filename", fileName));
+            // or, 필요하다면 둘 다 주기
+            // return ResponseEntity.ok(Map.of("filename", fileName, "path", "/uploads/" + fileName));
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body("업로드 실패: " + e.getMessage());
         }
     }
+
 }

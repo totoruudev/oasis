@@ -11,9 +11,12 @@ spring:
     name: oasis
 
   datasource:
-    url: jdbc:mysql://localhost:3306/oasis
-    username: root
-    password: 1234
+#    url: jdbc:mysql://localhost:3306/oasis
+    url: jdbc:mysql://oasis-mysql-container:3306/oasis
+#    username: root
+#    password: 1234
+    username: team24
+    password: team24pw
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -69,8 +72,19 @@ spring:
 upload:
   path: src/main/resources/static/uploads
 
+# 집
+#file:
+#  upload-dir: G:/oasis/uploads
+
+# 학원
+#file:
+#  upload-dir: D:/oasis/uploads
+#  legacy-dir: D:/oasis/uploads
+
+# AWS
 file:
-  upload-dir: G:/oasis/uploads
+  upload-dir: /uploads
+  legacy-dir: /uploads
 
 toss:
   payments:

@@ -1,17 +1,19 @@
 package com.totoru.oasis.controller;
 
 import com.totoru.oasis.dto.*;
-import com.totoru.oasis.entity.*;
+import com.totoru.oasis.entity.Category;
+import com.totoru.oasis.entity.SubCategory;
+import com.totoru.oasis.entity.User;
 import com.totoru.oasis.repository.*;
 import com.totoru.oasis.service.*;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -57,6 +59,7 @@ public class AdminController {
             LocalDateTime createdAt
     ) {}
 
+    // 💻 관리자 페이지 메인 화면
     @GetMapping("/summary")
     public ResponseEntity<Map<String, Object>> getAdminSummary() {
         Map<String, Object> summary = new HashMap<>();
@@ -91,7 +94,7 @@ public class AdminController {
         return ResponseEntity.ok(summary);
     }
 
-
+    // 😀 회원 관리
     // 전체/검색/페이지네이션
     @GetMapping("/users")
     public ResponseEntity<?> list(
@@ -118,7 +121,7 @@ public class AdminController {
     }
 
 
-    // ✅ 주문 전체 목록
+    // 🚚 주문 전체 목록
     @GetMapping("/orders")
     public Page<OrderResponse> getPagedOrders(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -152,7 +155,7 @@ public class AdminController {
         return ResponseEntity.ok("상태 변경 완료");
     }
 
-    // ✅ 상품 전체 목록
+    // 🎁 상품 관리
     @GetMapping("/products")
     public Page<ProductDto> getPagedProducts(
             @RequestParam(required = false) Long categoryId,
@@ -174,24 +177,35 @@ public class AdminController {
     }
 
     // === 3. 관리자 이미지 서빙 ===
+    @Value("${file.upload-dir}")
+    private String uploadDir;
+
+    @Value("${file.legacy-dir}")
+    private String legacyDir;
+
     @GetMapping("/images/products/{filename:.+}")
-    public ResponseEntity<Resource> serveAdminProductImage(@PathVariable String filename) {
+    public ResponseEntity<Resource> serveProductImage(@PathVariable String filename) {
+        // 현재 작업 폴더 기준 상대경로
+        Path uploadPath = Paths.get(uploadDir, filename);
+        Path legacyPath = Paths.get(legacyDir, filename);
+
         try {
-            // ※ 실제 이미지 저장 경로에 맞게 바꿔주세요!
-            Path imagePath = Paths.get("/images/products").resolve(filename); // 예: "C:/oasis/uploads/products"
-            Resource resource = new UrlResource(imagePath.toUri());
+            Resource resource = new UrlResource(uploadPath.toUri());
             if (resource.exists() && resource.isReadable()) {
-                // 이미지 확장자에 따라 contentType 다르게 하고 싶으면 별도 처리
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
                         .contentType(MediaType.IMAGE_JPEG)
                         .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
             }
-        } catch (Exception e) {
-            return ResponseEntity.status(500).build();
-        }
+            resource = new UrlResource(legacyPath.toUri());
+            if (resource.exists() && resource.isReadable()) {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + filename + "\"")
+                        .contentType(MediaType.IMAGE_JPEG)
+                        .body(resource);
+            }
+        } catch (Exception ignored) {}
+        return ResponseEntity.notFound().build();
     }
 
     @PostMapping("/categories")
@@ -207,6 +221,16 @@ public class AdminController {
     @GetMapping
     public ResponseEntity<List<Category>> listCategories() {
         return ResponseEntity.ok(categoryService.getAllCategories());
+    }
+
+    @GetMapping("/products/{id}")
+    public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
+        // 상품 서비스에서 ProductDto 반환
+        ProductDto product = productService.getProductById(id);
+        if (product == null) {
+            throw new EntityNotFoundException("상품이 존재하지 않습니다. id=" + id);
+        }
+        return ResponseEntity.ok(product);
     }
 
     @PostMapping("/products")
@@ -227,6 +251,7 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    // 🤖 AI 이미지
     // 1. 이미지 생성 (텍스트 → 이미지)
     @PostMapping(value = "/images/generate", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> generateImage(@RequestBody GenerateImageRequestDto request) {

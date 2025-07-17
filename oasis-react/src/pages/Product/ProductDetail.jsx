@@ -5,10 +5,10 @@ import axios from "axios";
 
 
 
-function getProductImageUrl(path) {
-    if (!path) return "/default_thumb.jpg";
-    if (path.startsWith("/")) return `http://localhost:8095${path}`;
-    return `http://localhost:8095/images/products/${path}`;
+function getProductImageUrl(filename) {
+    if (!filename) return "/default_thumb.jpg";
+    if (filename.startsWith("/")) return `http://localhost:8095${filename}`;
+    return `http://localhost:8095/images/products/${filename}`;
 }
 
 export default function ProductDetail() {

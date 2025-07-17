@@ -14,6 +14,18 @@ where id = 1;
 
 select * from user;
 
+select * from category;
+
+UPDATE category
+SET id = 5
+WHERE name = '테스트카테고리';
+UPDATE sub_category
+SET category_id = 5
+WHERE category_id = (SELECT id FROM category WHERE name = '테스트카테고리');
+
+SET FOREIGN_KEY_CHECKS = 1;
+commit;
+
 INSERT INTO event (title, description, banner_img, link_url, start_at, end_at, sort_order, active) VALUES
 ('여름엔 밀키트가 진리', '간편하게 즐기는 미식여행', 'Carousel_item_01.jpg', '/event/detail/1', '2025-06-30', '2025-07-09', 1, true),
 ('경기도 사회적 가치 생산품 착한소비 기획전', '여성/청년/장애인/노인일자리 상품', 'Carousel_item_02.jpg', '/event/detail/2', '2025-06-01', '2025-07-31', 2, true),

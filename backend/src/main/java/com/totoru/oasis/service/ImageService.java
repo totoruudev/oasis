@@ -25,10 +25,10 @@ public class ImageService {
     @Value("${OPENAI_API_KEY}")
     private String openaiApiKey;
 
-    @PostConstruct
-    public void checkKey() {
-        System.out.println("OpenAI Key(앞 8자리): " + (openaiApiKey != null ? openaiApiKey.substring(0,8) : "NULL"));
-    }
+//    @PostConstruct
+//    public void checkKey() {
+//        System.out.println("OpenAI Key(앞 8자리): " + (openaiApiKey != null ? openaiApiKey.substring(0,8) : "NULL"));
+//    }
 
     // 1. 이미지 생성 : POST -> https://api.openai.com/v1/images/generations
     public String generateImage(String prompt) {

@@ -29,10 +29,11 @@ export default function OrderSuccessPage() {
             amount
         }, { withCredentials: true })
             .then(res => {
+                console.log("[OrderSuccessPage 결제 응답]", res.data);
                 setOrder(res.data);
             })
             .catch(err => {
-                setError("결제 확인에 실패했습니다.");
+                setError("주문 정보가 늦게 도착할 수 있습니다. 잠시 후 새로고침 해주세요.");
             })
             .finally(() => setLoading(false));
     }, [location, navigate]);

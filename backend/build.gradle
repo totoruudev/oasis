@@ -60,3 +60,9 @@ dependencyManagement {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+bootJar {
+	archiveBaseName = 'app'
+	archiveFileName = 'app.jar'
+	archiveVersion = "0.0.1"
+}

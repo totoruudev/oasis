@@ -3,16 +3,17 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 function getSectionTitleByCategoryId(catId) {
-  switch (Number(catId)) {
-    case 1: return "신선하게 자라난 농산물";
-    case 2: return "농장에서 식탁까지 신선축산";
-    case 3: return "바다향 가득 품은 수산물";
-    case 4: return "요즘 인기있는 간식";
-    default: return "";
-  }
+    switch (Number(catId)) {
+        case 1: return "신선하게 자라난 농산물";
+        case 2: return "농장에서 식탁까지 신선축산";
+        case 3: return "바다향 가득 품은 수산물";
+        case 4: return "요즘 인기있는 간식";
+        case 5: return "테스트카테고리" ;
+        default: return "";
+    }
 }
 
-const CATEGORY_TITLES = { 1: "농산", 2: "축산", 3: "수산", 4: "간식" };
+const CATEGORY_TITLES = { 1: "농산", 2: "축산", 3: "수산", 4: "간식" , 5: "테스트카테고리"};
 
 function getProductImageUrl(path) {
     if (!path) return "/default_thumb.jpg";
@@ -32,6 +33,7 @@ function CategoryTabs({ activeId }) {
         { id: 2, name: "축산" },
         { id: 3, name: "수산" },
         { id: 4, name: "간식" },
+        { id: 5, name: "테스트" },
     ];
     return (
         <div className="d-flex mb-3 border-bottom">

@@ -34,10 +34,14 @@ export default function AdminProductList() {
             .then(res => setProducts(res.data.content || res.data)); // Page일 경우 .content
     }, [categoryId, subCategoryId]);
 
-    const getProductImageUrl = (filename) =>
-        filename
-            ? `/images/products/${filename}`
-            : "/default_thumb.jpg";
+    function getProductImageUrl(filename, type = "uploads") {
+        if (!filename) return "/default_thumb.jpg";
+        if (filename.startsWith("/")) return filename;
+        return type === "uploads"
+            ? `/uploads/${filename}`
+            : `/images/products/${filename}`;
+    }
+
 
     // 할인가 계산 함수
     const getDiscounted = (price, percent) => Math.floor(price * (1 - percent / 100) / 100) * 100;
@@ -76,7 +80,26 @@ export default function AdminProductList() {
                 <tbody>
                     {products.map(p => (
                         <tr key={p.id} style={{ cursor: "pointer" }} onClick={() => navigate(`/admin/products/${p.id}`)}>
-                            <td><img src={getProductImageUrl(p.thumbnailimg)} alt="썸네일" style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8 }} /></td>
+                            <td>
+                                <img
+                                    src={`/uploads/${p.thumbnailimg}`}
+                                    alt="썸네일"
+                                    style={{ width: 60, height: 60, objectFit: "cover", borderRadius: 8 }}
+                                    onError={e => {
+                                        // 1회 fallback: /images/products로 변경
+                                        if (!e.target.dataset.fallback) {
+                                            e.target.src = `/images/products/${p.thumbnailimg}`;
+                                            e.target.dataset.fallback = "1";
+                                        }
+                                        // 2회 fallback: /default_thumb.jpg로 변경
+                                        else if (e.target.dataset.fallback === "1") {
+                                            e.target.src = "/default_thumb.jpg";
+                                            e.target.dataset.fallback = "done";
+                                        }
+                                        // "done" 이후에는 아무것도 안 함 (무한루프 방지)
+                                    }}
+                                />
+                            </td>
                             <td>{p.categoryName}</td>
                             <td>{p.subCategoryName}</td>
                             <td>{p.name}</td>

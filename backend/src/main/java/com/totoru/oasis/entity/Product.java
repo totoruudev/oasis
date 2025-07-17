@@ -66,14 +66,4 @@ public class Product {
     @Column(name = "review_audio_path")
     private String reviewAudioPath;
 
-    public String getThumbnailimgPath() {
-        if (thumbnailimg == null) return null;
-        return "/images/products/" + thumbnailimg;
-    }
-
-    public String getDetailimgPath() {
-        if (detailimg == null) return null;
-        return "/images/products/" + detailimg;
-    }
-
 }

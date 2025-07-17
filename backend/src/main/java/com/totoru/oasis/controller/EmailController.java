@@ -35,7 +35,7 @@ public class EmailController {
             MimeMessage mimeMessage = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, false, "UTF-8");
             helper.setTo(email);
-            helper.setFrom("mina7p3829@gmail.com"); // 명시적으로 설정
+            helper.setFrom("totorudev@gmail.com"); // 명시적으로 설정
             helper.setSubject("회원가입 인증 코드");
             helper.setText("인증 코드: " + code, false);
 

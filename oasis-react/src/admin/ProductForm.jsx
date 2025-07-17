@@ -1,9 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import DallEModal from "../components/DallEModal";
 import "./ProductForm.css";
 
-export default function ProductForm({ initialData, onSubmit }) {
+export default function ProductForm({ onSubmit }) {
+
+    const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const id = searchParams.get("id");
+    const [initialData, setInitialData] = useState(null);
+
     // 상품 정보 state
     const [name, setName] = useState(initialData?.name || "");
     const [categoryId, setCategoryId] = useState(initialData?.category_id || "");
@@ -21,10 +28,14 @@ export default function ProductForm({ initialData, onSubmit }) {
 
     const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
-    // 카테고리/서브카테고리 데이터 불러오기 (최초 1회)
+    const getOnlyFileName = path => path?.split('/').pop() ?? "";
+
+    const uploadsUrl = "/uploads/";
+
     useEffect(() => {
         axios.get("/api/admin/categories").then(res => setCategories(res.data));
     }, []);
+
     useEffect(() => {
         if (categoryId) {
             axios.get("/api/admin/subcategories", { params: { categoryId } })
@@ -33,6 +44,39 @@ export default function ProductForm({ initialData, onSubmit }) {
             setSubCategories([]);
         }
     }, [categoryId]);
+
+    useEffect(() => {
+        if (id) {
+            axios.get(`/api/admin/products/${id}`)
+                .then(res => {
+                    setInitialData(res.data);
+                })
+                .catch(() => alert("상품 정보를 불러오지 못했습니다."));
+        }
+    }, [id]);
+
+    useEffect(() => {
+        if (initialData) {
+            setName(initialData.name || "");
+            setCategoryId(
+                initialData.categoryId ??
+                initialData.category_id ??
+                initialData.category?.id ??
+                ""
+            );
+            setSubCategoryId(
+                initialData.subCategoryId ??
+                initialData.sub_category_id ??
+                initialData.subCategory?.id ??
+                ""
+            );
+            setPrice(initialData.price ?? 0);
+            setPercent(initialData.percent ?? 0);
+            setThumbnailimg(initialData.thumbnailimg || "");
+            setDetailimg(initialData.detailimg || "");
+        }
+    }, [initialData]);
+
 
     // 썸네일 업로드
     const handleThumbFileChange = e => {
@@ -53,12 +97,16 @@ export default function ProductForm({ initialData, onSubmit }) {
             return;
         }
         const formData = new FormData();
+
         formData.append("file", uploadThumbFile);
+
         const res = await axios.post("/api/upload", formData, {
             headers: { "Content-Type": "multipart/form-data" }
         });
-        console.log("썸네일 업로드 응답:", res.data);
-        setThumbnailimg(res.data.path);
+
+        console.log("썸네일 업로드 응답:", res.filename);
+        
+        setThumbnailimg(`${uploadsUrl}${res.data.filename}`);
         alert("썸네일 이미지 업로드 성공");
     };
 
@@ -71,7 +119,7 @@ export default function ProductForm({ initialData, onSubmit }) {
         const res = await axios.post("/api/upload", formData, {
             headers: { "Content-Type": "multipart/form-data" }
         });
-        setDetailimg(res.data.path);
+        setDetailimg(`${uploadsUrl}${res.data.filename}`);
         alert("상세 이미지 업로드 성공");
     };
 
@@ -85,7 +133,7 @@ export default function ProductForm({ initialData, onSubmit }) {
         const uploadRes = await axios.post("/api/upload", formData, {
             headers: { "Content-Type": "multipart/form-data" }
         });
-        setThumbnailimg(uploadRes.data.path);
+        setThumbnailimg(uploadRes.data.filename);
         setImgType("ai");
         alert("AI 이미지 업로드 성공!");
     };
@@ -110,21 +158,30 @@ export default function ProductForm({ initialData, onSubmit }) {
             subCategoryId: Number(subCategoryId),
             price,
             percent,
-            thumbnailimg,
-            detailimg,
+            thumbnailimg: getOnlyFileName(thumbnailimg),
+            detailimg: getOnlyFileName(detailimg), 
             description: "",
             active: true
         };
     
         try {
-            await axios.post("/api/admin/products", productData);
-            alert("상품 등록 완료!");
+            if (initialData?.id) {
+                // 수정
+                await axios.put(`/api/admin/products/${initialData.id}`, productData);
+                alert("상품 수정 완료!");
+            } else {
+                // 등록
+                await axios.post("/api/admin/products", productData);
+                alert("상품 등록 완료!");
+            }
+            navigate("/admin/products");
             if (onSubmit) onSubmit();
-        } catch (err) {
-            console.error("상품 등록 실패:", err.response?.data || err.message);
-            alert("상품 등록 실패: " + (err.response?.data?.message || err.message));
-        }
+            } catch (err) {
+                alert("오류: " + (err.response?.data?.message || err.message));
+            }
     };
+
+    if (id && !initialData) return <div className="container py-5 text-center">상품 정보 로딩중...</div>;
 
     return (
         <form onSubmit={handleSubmit} className="product-form-wrapper">

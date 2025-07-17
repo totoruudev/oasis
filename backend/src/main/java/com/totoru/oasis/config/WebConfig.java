@@ -19,6 +19,8 @@ public class WebConfig implements WebMvcConfigurer {
         String resourcePath = "file:" + (uploadDir.endsWith("/") ? uploadDir : uploadDir + "/");
         registry.addResourceHandler("/uploads/**")
                 .addResourceLocations(resourcePath);
+        registry.addResourceHandler("/images/products/**")
+                .addResourceLocations(resourcePath);
     }
 
     @Override
