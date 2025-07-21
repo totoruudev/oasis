@@ -29,7 +29,7 @@ pipeline {
 //             steps {
 //                 bat 'cd backend && gradle test'
 //             }
-        }
+//         }
         stage('Run Locally') {
             steps {
                 bat 'cd backend && java -jar build\\libs\\app.jar'
