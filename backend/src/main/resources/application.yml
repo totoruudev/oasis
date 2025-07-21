@@ -11,8 +11,8 @@ spring:
     name: oasis
 
   datasource:
-    url: jdbc:mysql://localhost:3306/oasis
-#    url: jdbc:mysql://oasis-mysql-container:3306/oasis
+#    url: jdbc:mysql://localhost:3306/oasis
+    url: jdbc:mysql://oasis-mysql-container:3306/oasis
 #    username: root
 #    password: 1234
     username: team24
