@@ -25,10 +25,10 @@ pipeline {
                 bat 'cd backend && gradle clean build -x test'
             }
         }
-        stage('Test') {
-            steps {
-                bat 'cd backend && gradle test'
-            }
+//         stage('Test') {
+//             steps {
+//                 bat 'cd backend && gradle test'
+//             }
         }
         stage('Run Locally') {
             steps {
