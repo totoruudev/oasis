@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Build') {
             steps {
-                bat 'cd backend && gradle clean build'
+                bat 'cd backend && gradle clean build -x test'
             }
         }
         stage('Test') {
