@@ -3,8 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import styles from './ProductDetail.module.css';
 import axios from "axios";
 
-
-
 function getProductImageUrl(filename) {
     if (!filename) return "/default_thumb.jpg";
     if (filename.startsWith("/")) return `${process.env.REACT_APP_API_BASE_URL}${filename}`;

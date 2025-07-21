@@ -57,7 +57,8 @@ public class SecurityConfig {
                                 "/images/**", "/data/**", "/uploads/**",
                                 "/static/**", "/css/**", "/js/**",
                                 "/api/images/**", "/api/data/**", "/api/uploads/**",
-                                "/api/static/**", "/api/css/**", "/api/js/**"
+                                "/api/static/**", "/api/css/**", "/api/js/**",
+                                "/favicon.ico", "/manifest.json"
                         ).permitAll()
                         .requestMatchers(
                                 "/api/users/join", "/api/users/login", "/api/users/check-*", "/api/users/check/*", "/api/users/check*",
@@ -90,7 +91,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        config.addAllowedOriginPattern("*");
+        config.setAllowedOrigins(List.of("http://13.124.48.45:3000", "http://3.34.191.154"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
 

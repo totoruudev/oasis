@@ -20,7 +20,7 @@ function chunkArray(array, size) {
 function getProductImageUrl(path) {
   if (!path) return "/default_thumb.jpg";
   if (path.startsWith("/")) return `${process.env.REACT_APP_API_BASE_URL}${path}`;
-  return `${process.env.REACT_APP_API_BASE_URL}/${path}`;
+  return `${process.env.REACT_APP_API_BASE_URL}/images/products/${path}`;
 }
 
 function getPrettyPrice(price, percent) {
