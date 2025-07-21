@@ -22,17 +22,17 @@ pipeline {
         }
         stage('Build') {
             steps {
-                bat 'gradle clean build'
+                bat 'cd backend && gradle clean build'
             }
         }
         stage('Test') {
             steps {
-                bat 'gradle test'
+                bat 'cd backend && gradle test'
             }
         }
         stage('Run Locally') {
             steps {
-                bat 'java -jar backend\\build\\libs\\app.jar'
+                bat 'cd backend && java -jar build\\libs\\app.jar'
             }
         }
         stage('Deploy to AWS EC2') {
@@ -41,7 +41,7 @@ pipeline {
                 REM ==============================
                 REM Step 1: EC2에 JAR 업로드
                 REM ==============================
-                ssh -i D:\\oasis\\oasis.pem^
+                scp -i D:\\oasis\\oasis.pem^
                  -o StrictHostKeyChecking=no ^
                  backend\\build\\libs\\app.jar ^
                  ec2-user@ec2-3-34-191-154.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/
