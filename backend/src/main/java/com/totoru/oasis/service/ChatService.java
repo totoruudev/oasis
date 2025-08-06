@@ -33,7 +33,7 @@ public class ChatService {
         if (presetAnswers.containsKey(userInput.trim())) {
             answer = presetAnswers.get(userInput.trim());
         } else {
-            String systemPrompt = "너는 오아시스 마켓의 AI 상담원이야. 오아시스마켓과 무관하거나 구현되지 않은 기능은 '지원하지 않습니다.'라고 답해.";
+            String systemPrompt = "너는 오아시스 마켓의 AI 상담원이야. 오아시스마켓과 무관하d거나 구현되지 않은 기능은 '지원하지 않습니다.'라고 답해.";
             var messages = List.of(
                     Map.of("role", "system", "content", systemPrompt),
                     Map.of("role", "user", "content", userInput)

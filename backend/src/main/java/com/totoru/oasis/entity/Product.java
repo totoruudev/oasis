@@ -38,10 +38,13 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(nullable = false)
     private String thumbnailimg;
 
+    @Column(nullable = false)
     private String detailimg;
 
+    @Column(nullable = false)
     private int percent;
 
     private LocalDateTime createdAt;

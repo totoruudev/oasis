@@ -27,18 +27,34 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String phone;
+
+    @Column(nullable = false)
     private String address;
 
+    @Column(nullable = false)
     private Integer totalAmount;
 
+    @Column(nullable = false)
     private String status;
+
+    @Column(nullable = false)
     private String username;
+
+    @Column(nullable = false)
     private String sessionId;
 
+    @Column(nullable = false)
     private String orderId;
+
+    @Column(nullable = false)
     private String paymentKey;
+
+    @Column(nullable = false)
     private String payMethod;
 
     private LocalDateTime createdAt;

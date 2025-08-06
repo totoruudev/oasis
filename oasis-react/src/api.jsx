@@ -53,3 +53,5 @@ export const variationImage = async (formData) => {
     });
     return URL.createObjectURL(new Blob([res.data], { type: 'image/png' }));
 };
+
+export default axios;

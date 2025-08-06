@@ -3,20 +3,20 @@ server:
   servlet:
     session:
       cookie:
-        same-site: none
-        secure: true
+        same-site: lax
+        secure: false
 
 spring:
   application:
     name: oasis
 
   datasource:
-#    url: jdbc:mysql://localhost:3306/oasis
-    url: jdbc:mysql://oasis-mysql-container:3306/oasis
-#    username: root
-#    password: 1234
-    username: team24
-    password: team24pw
+    url: jdbc:mysql://localhost:3306/oasis
+    #    url: jdbc:mysql://oasis-mysql-container:3306/oasis
+    username: root
+    password: 1234
+    #    username: team24
+    #    password: team24pw
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -91,8 +91,8 @@ toss:
     test-client-key: ${TOSS_TEST_CLIENT_KEY}
     test-secret-key: ${TOSS_TEST_SECRET_KEY}
     base-url: "https://api.tosspayments.com/v1"
-    success-url: "http://13.124.48.45:8095/api/payment/success"
-    fail-url: "http://13.124.48.45:8095/api/payment/fail"
+    success-url: "http://localhost:8095/api/payment/success"
+    fail-url: "http://localhost:8095/api/payment/fail"
 
 logging:
   level:
